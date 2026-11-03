@@ -54,7 +54,7 @@ section.bars .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0 
 .col.hi .bar span{color:#fff}
 .col.hi .num{color:var(--orange)}
 .road{position:relative;height:clamp(60px,10vw,110px);background:var(--road)}
-.road:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,var(--orange) 0 24%,transparent 24% 26%,var(--orange) 26% 44%,transparent 44% 46%,var(--orange) 46% 64%,transparent 64% 66%,var(--orange) 66% 79%,transparent 79% 81%,var(--orange) 81%)}
+.road:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--orange)}
 .road:after{content:"";position:absolute;left:0;right:0;top:55%;border-top:4px dashed #fff}
 .rider{position:absolute;bottom:6%;height:150%;aspect-ratio:513/480;pointer-events:none}
 .legend.big{font-size:14px;margin-top:14px}
@@ -82,7 +82,6 @@ footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--mute);fo
     <ul class="legend big">
       <li><svg width="22" height="14"><rect width="22" height="14" rx="3" fill="#F26B1D"/></svg>斷口最多的兩個區</li>
       <li><svg width="22" height="14"><rect width="22" height="14" rx="3" fill="#FAB37A"/></svg>其他分區</li>
-      <li><svg width="30" height="8"><path d="M0 4H12M17 4H30" stroke="#F26B1D" stroke-width="4"/></svg>橙色路緣的缺口代表斷口（示意）</li>
       <li>長條上方數字＝斷口數（處）；由西向東排列</li>
     </ul>
     <p class="src">資料來源：運輸署　製圖：於夏涵</p>
