@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>新界單車徑每公里約有 5 處斷口</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap">
+<style>
+:root{
+  --navy:#162946; --mute:#5b6573; --orange:#F26B1D; --lorange:#FAB37A; --road:#EDF0F5; --line:#dfe3ea;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:var(--navy);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.5}
+.wrap{max-width:1000px;margin:0 auto;padding:0 clamp(24px,7vw,72px)}
+header{padding:48px 0 16px}
+h1{font-size:clamp(28px,4.2vw,52px);line-height:1.2;margin:0 0 10px}
+.lead{color:var(--mute);font-size:clamp(15px,1.6vw,18px);margin:0;max-width:60em}
+.hint{color:var(--mute);font-size:14px;margin:6px 0 0}
+/* ---------- maps ---------- */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px 28px;margin:32px 0 8px}
+@media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.grid{grid-template-columns:1fr}}
+.card h2{font-size:20px;margin:0}
+.card .sub{color:var(--mute);font-size:14px;margin:2px 0 10px}
+.map{position:relative;aspect-ratio:1/1;overflow:hidden;background:#e7e8ea;cursor:crosshair;touch-action:pan-y;border-radius:4px}
+.stage{position:absolute;inset:0}
+.stage img{position:absolute;left:0;top:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
+.stage .trk{filter:drop-shadow(0 0 2.5px rgba(255,140,40,.9))}
+.hl{position:absolute;border:2px solid var(--navy);background:rgba(255,255,255,.12);pointer-events:none;display:none}
+.zoom{position:absolute;width:52%;aspect-ratio:1/1;overflow:hidden;background:#e7e8ea;border:3px solid #fff;box-shadow:0 6px 22px rgba(0,0,0,.35);pointer-events:none;display:none}
+.zoom .zstage{position:absolute}
+.zoom .zstage img{position:absolute;left:0;top:0;width:100%;height:100%}
+.zoom .zstage .trk{filter:drop-shadow(0 0 3px rgba(255,140,40,.9))}
+.zoom .tag{position:absolute;left:6px;bottom:6px;background:rgba(22,41,70,.85);color:#fff;font-size:12px;padding:1px 7px;border-radius:2px}
+.map.on .hl,.map.on .zoom{display:block}
+/* ---------- legends ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;list-style:none;margin:10px 0 0;padding:0;font-size:13px;color:var(--mute)}
+.legend li{display:flex;align-items:center;gap:7px}
+.legend svg{flex:none}
+.src{color:var(--mute);font-size:13px;margin:22px 0 0}
+/* ---------- bar chart ---------- */
+section.bars{margin:56px 0 0;padding-bottom:64px}
+section.bars h2{font-size:clamp(24px,3.4vw,44px);line-height:1.2;margin:0}
+section.bars .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0 0}
+.chart{position:relative;margin-top:28px;border-radius:4px;overflow:hidden}
+.plot{display:grid;grid-template-columns:repeat(9,1fr);align-items:end;position:relative;height:clamp(360px,62vw,640px);padding:30px 4px 0 46px}
+.axis{position:absolute;left:0;right:0;top:30px;bottom:0;pointer-events:none}
+.tick{position:absolute;left:0;right:0;border-top:1px solid #e3e6ec;height:0}
+.tick span{position:absolute;left:0;top:-9px;width:38px;text-align:right;font-size:clamp(11px,1.3vw,14px);color:var(--mute);background:#fff;line-height:18px}
+.tick:first-child{border-top:0}
+.axis .ttl{position:absolute;left:0;top:-26px;font-size:clamp(11px,1.3vw,14px);color:var(--mute)}
+.col{position:relative;z-index:1}
+.col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.num{font-weight:700;font-size:clamp(16px,2.6vw,32px);margin-bottom:6px}
+.bar{width:62%;max-width:100px;background:var(--lorange);border-radius:10px 10px 0 0;position:relative;display:flex;justify-content:center;align-items:flex-start}
+.bar span{writing-mode:vertical-rl;text-orientation:sideways;transform:rotate(180deg);font-weight:700;font-size:clamp(11px,1.7vw,22px);color:var(--navy);white-space:nowrap}
+.bar{height:0;overflow:hidden;transition:height 1.3s cubic-bezier(.22,.9,.25,1) var(--d,0s)}
+.bar span{margin-top:12px;opacity:0;transition:opacity .6s ease calc(var(--d,0s) + .9s)}
+.num{opacity:0;transform:translateY(10px);transition:opacity .6s ease calc(var(--d,0s) + .8s),transform .6s ease calc(var(--d,0s) + .8s)}
+.rider{opacity:0;transform:translateX(-40px);transition:opacity .8s ease 1.2s,transform 1.2s cubic-bezier(.2,.8,.2,1) 1.2s}
+.chart.in .bar{height:var(--h)}
+.chart.in .bar span,.chart.in .num{opacity:1;transform:none}
+.chart.in .rider{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.bar,.bar span,.num,.rider{transition:none!important}}
+.col.hi .bar{background:var(--orange)}
+.col.hi .bar span{color:#fff}
+.col.hi .num{color:var(--orange)}
+.road{position:relative;height:clamp(60px,10vw,110px);background:var(--road)}
+.road:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--orange)}
+.road:after{content:"";z-index:0;position:absolute;left:0;right:0;top:55%;border-top:4px dashed #fff}
+.rider{z-index:1;position:absolute;bottom:6%;height:150%;aspect-ratio:513/480;pointer-events:none}
+.legend.big{font-size:14px;margin-top:14px}
+/* ---------- parking layers (fixed geometry copied from the Figma frame, scaled with the container) ---------- */
+section.stack{margin:8px 0 0;padding:56px 0 64px;border-top:1px solid var(--line)}
+section.stack h2{font-size:clamp(24px,3.4vw,44px);line-height:1.2;margin:0}
+section.stack .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0 0}
+.pdot{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:15px;color:var(--navy)}
+.pdot i{width:14px;height:14px;border-radius:50%;background:#E5311F;display:inline-block}
+.figscroll{position:relative;width:100vw;max-width:1240px;margin-top:8px;margin-left:50%;transform:translateX(-50%);overflow-x:auto;overflow-y:hidden}
+.fig{position:relative;min-width:860px;width:100%;aspect-ratio:1600/2790;container-type:inline-size;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+.fig svg.g{position:absolute;inset:0;width:100%;height:100%;display:block}
+.fig .a{position:absolute;margin:0;white-space:nowrap}
+.fig img.a{display:block}
+.fig .dsc{white-space:normal}
+footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--mute);font-size:13px}
+</style>
+<style>:root{--navy:#49372f;--mute:#5b6573;--orange:#ef785d;--lorange:#b5bac1;--line:#e4e7eb}.wrap{max-width:none;padding:0}header{padding:0 0 12px}h1,.bars h2{font-size:18px!important;line-height:1.5!important}h1{margin:0 0 8px}.lead,.hint,.sub{font-size:14px!important;line-height:1.8}.grid{grid-template-columns:repeat(2,1fr);gap:24px 18px;margin:22px 0}.card h2{font-size:16px}.legend{font-size:12px}.stage .trk,.zoom .zstage .trk{filter:none}.zoom{box-shadow:none}.map,.chart,.bar{border-radius:0}.plot{height:330px;padding-left:34px}.num{font-size:16px!important;color:var(--navy)!important}.bar{width:62%;flex-shrink:0}.bar-place{font-size:12px;writing-mode:vertical-rl;min-height:90px;margin-top:10px;color:var(--navy)}.col{padding-bottom:0}.axis{bottom:100px}.road,.legend.big{display:none!important}.src{font-size:13px;line-height:1.8}footer{border:0;padding:12px 0;font-size:13px}.bars{margin-top:30px!important;padding-bottom:20px!important}.tick span,.axis .ttl{font-size:12px!important}.card .sub{font-size:12px!important}@media(max-width:600px){h1,.bars h2{font-size:17px!important}.src,footer{font-size:12px}.grid{grid-template-columns:1fr}.num{font-size:14px!important}.bar-place{font-size:12px}.plot{height:310px}}</style><style>.plot{display:block!important;height:390px!important;padding:0!important;overflow:visible}.chart{overflow:visible}</style><style>.grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px 12px!important}.card{min-width:0}.card h2{font-size:14px;line-height:1.5}.card .sub{font-size:12px!important;line-height:1.5;margin-bottom:6px}.map{width:100%;max-width:100%;border-radius:0}.compact-key{font-size:12px;color:#5b6573;margin:12px 0}.lead,.hint{font-size:13px!important}.plot{height:300px!important}.bars{margin-top:24px!important}.bars h2{font-size:17px!important}.bars .sub{font-size:13px!important}.chart{margin-top:12px}@media(max-width:500px){.grid{gap:16px 8px!important}.card h2{font-size:12px}.card .sub{font-size:12px!important}.zoom .tag{font-size:12px}.map{min-height:0}}
+</style><style>.plot{height:252px!important}.hover-column{cursor:pointer;outline:none}.hover-bar{transition:transform .22s ease,fill .22s ease;transform:scaleX(1)}.hover-number{transition:transform .22s ease;font-weight:500}.hover-column.active .hover-bar,.hover-column:focus .hover-bar{transform:scaleX(1.2) scaleY(1.08);fill:#ef785d}.hover-column.active .hover-number,.hover-column:focus .hover-number{transform:translateY(-10px) scale(1.35);font-weight:700}.hover-column:focus .hover-bar{stroke:#49372f;stroke-width:1}@media(prefers-reduced-motion:reduce){.hover-bar,.hover-number{transition:none}}</style><style>.grid{column-gap:30px!important;row-gap:28px!important;padding:8px 6px}.card{position:relative;transform-origin:center;transition:transform .28s ease;outline:none;background:white}.card:hover,.card:focus-visible{transform:scale(1.065);z-index:5}.card h2{transition:color .28s ease}.card:hover h2,.card:focus-visible h2{color:#bd503b}.card:focus-visible{outline:2px solid #ef785d;outline-offset:5px}@media(max-width:500px){.grid{column-gap:15px!important;row-gap:22px!important;padding:6px 3px}}@media(prefers-reduced-motion:reduce){.card{transition:none}}</style></head>
+<body>
+<header class="wrap">
+  <h1>新界單車徑的線段接續</h1>
+  <p class="lead">依線段端點距離計算的疑似接續缺口，在地圖上以黑色粗線標示。每張地圖都可以把滑鼠移上去（手機用手指按住滑動），旁邊會出現放大圖。</p>
+  <p class="hint">計算定義：單車徑線段端點與最近的其他線段相距超過10米。這是地理資料分析結果，不能直接視作現場無法通行或必須下車的位置；實際安排須現場核實。</p>
+</header>
+
+<main class="wrap">
+  <p class="compact-key">珊瑚色實線：單車徑　虛線：連接設施　黑色粗線：疑似接續缺口</p><div class="grid" id="grid"></div>
+  <p class="src">資料來源：運輸署　底圖：© 地政總署　製圖：於夏涵</p>
+
+  <section class="bars" aria-labelledby="bt">
+    <h2 id="bt">上水／粉嶺斷口最多，天水圍居次</h2>
+    <p class="sub">九個分區的線段端點計算結果</p>
+    <div class="chart">
+      <div class="plot" id="plot" role="img" aria-label="九個分區的斷口數長條圖"></div>
+      <div class="road" id="road"></div>
+    </div>
+    <ul class="legend big">
+      <li><svg width="22" height="14"><rect width="22" height="14" rx="3" fill="#F26B1D"/></svg>斷口最多的兩個區</li>
+      <li><svg width="22" height="14"><rect width="22" height="14" rx="3" fill="#FAB37A"/></svg>其他分區</li>
+      <li>長條上方數字＝斷口數（處）；按斷口數由多至少排列</li>
+    </ul>
+    <p class="src">資料來源：運輸署　製圖：於夏涵</p>
+  </section>
+
+
+</main>
+<footer><div class="wrap">底圖 © 地政總署。單車徑及斷口資料來自運輸署「單車資料」，斷口為本專題以 10 米容差計算的結果。</div></footer>
+
+<script>
+const D=[
+ {n:'01',name:'元朗／朗屏',km:16.7,c:119},
+ {n:'02',name:'天水圍',km:26.2,c:167},
+ {n:'03',name:'屯門',km:19.1,c:118},
+ {n:'04',name:'上水／粉嶺',km:29.5,c:202},
+ {n:'05',name:'大埔',km:24.8,c:101},
+ {n:'06',name:'沙田',km:38.1,c:126},
+ {n:'07',name:'馬鞍山',km:14.5,c:39},
+ {n:'08',name:'將軍澳／西貢',km:26.8,c:122},
+ {n:'09',name:'東涌',km:8.7,c:44}
+];
+const LEG=`<ul class="legend">
+ <li><svg width="26" height="10"><path d="M1 5H25" stroke="#F26B1D" stroke-width="3.5" stroke-linecap="round"/></svg>單車徑</li>
+ <li><svg width="26" height="10"><path d="M1 5H25" stroke="#F26B1D" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="6 4"/></svg>連接設施</li>
+ <li><svg width="26" height="10"><path d="M3 5H23" stroke="#0D0D0D" stroke-width="6"/></svg>斷口（接不上的缺口）</li>
+ <li><svg width="16" height="16"><rect width="16" height="16" fill="#d9d9dc"/></svg>灰色底圖</li>
+</ul>`;
+const Z=3.2, PANEL=0.52;
+const grid=document.getElementById('grid');
+D.forEach(d=>{
+  const card=document.createElement('figure'); card.className='card';card.tabIndex=0; card.style.margin=0;
+  card.innerHTML=`<h2>${d.name}</h2><p class="sub">單車徑與連接設施 ${d.km} 公里；斷口 ${d.c} 處</p>
+  <div class="map" data-n="${d.n}" aria-label="${d.name}單車徑與斷口地圖">
+    <div class="stage">
+      <img src="assets/base_${d.n}.webp" alt="" loading="lazy">
+      <img class="trk" src="assets/track_${d.n}.svg" alt="" loading="lazy">
+      <img src="assets/gap_${d.n}.svg" alt="" loading="lazy">
+    </div>
+    <div class="hl"></div>
+    <div class="zoom"><div class="zstage">
+      <img src="assets/base_${d.n}.webp" alt=""><img class="trk" src="assets/track_${d.n}.svg" alt=""><img src="assets/gap_${d.n}.svg" alt="">
+    </div><span class="tag">放大 ×${Z}</span></div>
+  </div>`;
+  grid.appendChild(card);
+});
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+document.querySelectorAll('.map').forEach(map=>{
+  const hl=map.querySelector('.hl'), zoom=map.querySelector('.zoom'), zs=map.querySelector('.zstage');
+  function move(e){
+    const r=map.getBoundingClientRect(), W=r.width;
+    const x=clamp((e.clientX-r.left)/W,0,1), y=clamp((e.clientY-r.top)/W,0,1);
+    const f=PANEL/Z, cx=clamp(x,f/2,1-f/2), cy=clamp(y,f/2,1-f/2);
+    hl.style.left=(cx-f/2)*100+'%'; hl.style.top=(cy-f/2)*100+'%'; hl.style.width=hl.style.height=f*100+'%';
+    zoom.style.left=(x<0.5?1-PANEL-0.03:0.03)*100+'%';
+    zoom.style.top=(y<0.5?1-PANEL-0.03:0.03)*100+'%';
+    const SW=Z*W; zs.style.width=zs.style.height=SW+'px';
+    zs.style.left=-(cx-f/2)*SW+'px'; zs.style.top=-(cy-f/2)*SW+'px';
+    map.classList.add('on');
+  }
+  map.addEventListener('pointerenter',move);
+  map.addEventListener('pointermove',move);
+  map.addEventListener('pointerdown',move);
+  map.addEventListener('pointerleave',e=>{ if(e.pointerType==='mouse') map.classList.remove('on'); });
+});
+document.addEventListener('pointerdown',e=>{ if(!e.target.closest('.map')) document.querySelectorAll('.map.on').forEach(m=>m.classList.remove('on')); });
+
+/* Sorted flat bars: a shared zero baseline and direct labels. */
+const plot=document.getElementById('plot');
+function drawBars(){
+ const data=D.slice().sort((a,b)=>b.c-a.c),W=plot.clientWidth,H=252,left=32,right=6,base=152,top=26,step=(W-left-right)/9,scale=(base-top)/250;
+ plot.innerHTML='';
+ const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('width','100%');svg.setAttribute('height',H);svg.setAttribute('role','img');svg.setAttribute('aria-label','九個分區的線段接續缺口數，由多至少排列，上水／粉嶺最多，為202處');plot.append(svg);
+ const add=(tag,attrs,text)=>{const el=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));if(text!==undefined)el.textContent=text;svg.append(el);return el;};
+ add('text',{x:0,y:14,fill:'#5b6573','font-size':12},'處');
+ for(const n of [0,100,200,250]){const y=base-n*scale;add('line',{x1:left,x2:W-right,y1:y,y2:y,stroke:'#e4e7eb'});add('text',{x:left-6,y:y+4,'text-anchor':'end',fill:'#5b6573','font-size':12},n);}
+ data.forEach((d,i)=>{const cx=left+(i+.5)*step,bw=step*.6,y=base-d.c*scale;
+ const group=document.createElementNS(ns,'g');group.setAttribute('class','hover-column');group.setAttribute('tabindex','0');group.setAttribute('role','button');group.setAttribute('aria-label',d.name+'，'+d.c+'處');svg.append(group);
+ const bar=add('rect',{x:cx-bw/2,y,width:bw,height:base-y,fill:i<2?'#ef785d':'#b5bac1',class:'hover-bar',style:`transform-origin:${cx}px ${base}px`});group.append(bar);
+ const number=add('text',{x:cx,y:y-7,'text-anchor':'middle','font-size':12,fill:'#49372f',class:'hover-number',style:`transform-origin:${cx}px ${y-7}px`},d.c);group.append(number);
+ const hit=add('rect',{x:cx-step*.48,y:top-20,width:step*.96,height:base-top+20,fill:'transparent'});group.append(hit);
+ add('text',{x:cx,y:base+16,'writing-mode':'vertical-rl','font-size':12,fill:'#49372f'},d.name);
+ group.addEventListener('pointerenter',()=>group.classList.add('active'));group.addEventListener('pointerleave',()=>group.classList.remove('active'));group.addEventListener('click',()=>group.classList.toggle('active'));
+ });
+}
+new ResizeObserver(drawBars).observe(plot);drawBars();
+</script>
+<script>(()=>{let last=0;const send=()=>{const h=Math.ceil(document.body.getBoundingClientRect().height);if(h>0&&Math.abs(h-last)>2){last=h;parent.postMessage({type:'cycling-component-size',height:h},location.origin)}};new ResizeObserver(send).observe(document.body);addEventListener('load',send);document.addEventListener('toggle',send,true);send()})()</script></body>
+</html>

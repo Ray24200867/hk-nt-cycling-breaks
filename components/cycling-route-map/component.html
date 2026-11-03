@@ -1,0 +1,335 @@
+<!--
+============================================================================
+  元件：單車徑斷點路線圖 (cycling-route breakpoints map)
+  給接手網頁的 AI —— 這是一個可直接嵌入的 HTML 片段，不是完整頁面。
+  本檔案沒有 <html>/<head>/<body>，可直接 insertAdjacentHTML / 貼進模板 /
+  放進 CMS 的 HTML block。所有 CSS 選擇器都以 #crm-root 為作用域，
+  所有 SVG id 與 JS 全域變數都加了 crm- 前綴 / IIFE 包覆，不會污染宿主頁面。
+
+  【用法 A｜最省事，零衝突】用 iframe 引入同包的完整頁面：
+    <div style="width:100%;max-width:1440px;margin:0 auto;aspect-ratio:1440/1520">
+      <iframe src="cycling-route-breakpoints.html"
+              style="width:100%;height:100%;border:0" loading="lazy"
+              title="單車徑斷點路線圖"></iframe>
+    </div>
+  可直接參考同資料夾的 embed.html。
+
+  【用法 B｜插入 DOM】把本檔案全部內容直接放進目標網頁的容器中：
+    <div id="my-section"></div>
+    <script>fetch("component.html").then(r=>r.text()).then(h=>{
+      document.getElementById("my-section").innerHTML = h;
+    })</script>
+  注意：innerHTML 注入的 <script> 不會執行，需改用 DOM 方式插入，
+  或直接把 <script> 內容搬到宿主頁面上。用法 A 沒有這個限制。
+
+  【資源依賴】7 個檔案，必須保持以下相對結構：
+    map-base.jpg
+    photos/breakpoint-1.jpg ... breakpoint-5.jpg
+  若資源不在同目錄：只需改 <script> 裡的 ASSET_BASE 常數
+  （例如 "/assets/route/" 或 CDN 前綴），圖片路徑會自動全部套用。
+  缺少照片時該圓圈會自動顯示「現場照片」佔位，不會破圖。
+
+  【尺寸】SVG viewBox = 0 0 1440 1520，寬度 100% 自適應、高度等比。
+  外層容器建議 max-width: 1440px；不要設定固定 height，否則會變形。
+
+  【互動】滑鼠移到地圖上的編號 1–5，對應照片圓圈放大 1.14 倍並
+  出現 8px 赭紅 #C4502A 包邊；移開即復原。圓圈本身不響應 hover。
+
+  【顏色 / 資料】單車徑 #2B6CB0、人行道 #C4502A、紙色 #FAF8F5。
+  五個 WGS84 座標存在每個 #crm-breakpoint-N 的 data-lat / data-lon。
+  全文為繁體中文；改文案請直接編輯 SVG 內的 <text>。
+
+  【不要做】不要移除 #crm-root 包裝、不要去掉 id 的 crm- 前綴、
+  不要把底圖換成需要 API key 的線上地圖（本圖使用使用者提供的靜態底圖，
+  不含任何外部服務請求）。
+============================================================================
+-->
+<style>
+#crm-root {
+  --cycle: #2B6CB0;
+  --walk: #C4502A;
+  --ink: #263238;
+  --muted: #756F69;
+  --paper: #FAF8F5;
+  --leader: #8E8178;
+  box-sizing: border-box;
+  width: 100%;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "PingFang SC", "Noto Sans CJK TC", "Microsoft JhengHei", sans-serif;
+}
+#crm-root *, #crm-root *::before, #crm-root *::after { box-sizing: border-box; }
+#crm-root .crm-main { width: 100%; max-width: 1600px; margin: 0 auto; }
+#crm-root svg { display: block; width: 100%; height: auto; }
+#crm-root .title { font-size: 48px; font-weight: 720; letter-spacing: 1.4px; fill: var(--ink); }
+#crm-root .subtitle { font-size: 17px; font-weight: 400; letter-spacing: 1px; fill: var(--muted); }
+#crm-root .legend-text { font-size: 14px; font-weight: 550; fill: var(--ink); }
+#crm-root .photo-label { font-size: 17px; font-weight: 700; letter-spacing: 1px; fill: var(--ink); }
+#crm-root .photo-sub { font-size: 12px; font-weight: 500; fill: var(--muted); }
+#crm-root .terminal-main { font-size: 18px; font-weight: 780; letter-spacing: 2px; fill: var(--ink); }
+#crm-root .terminal-sub { font-size: 13px; font-weight: 500; letter-spacing: .5px; fill: var(--muted); }
+#crm-root .photo-placeholder { font-size: 12px; font-weight: 550; letter-spacing: 1px; fill: #9B948D; }
+#crm-root .photo-number { font-size: 15px; font-weight: 750; fill: #FFFFFF; text-anchor: middle; dominant-baseline: central; }
+#crm-root .map-number { font-size: 14px; font-weight: 750; fill: var(--walk); text-anchor: middle; dominant-baseline: central; }
+#crm-root .map-label { font-size: 13px; font-weight: 650; letter-spacing: .6px; fill: var(--ink); }
+#crm-root .photo-connector { fill: none; stroke: var(--walk); stroke-width: 2.4; stroke-dasharray: 4 6; opacity: .9; }
+#crm-root .photo-connector.stepped { stroke-linejoin: round; stroke-linecap: butt; }
+#crm-root .node-disc { transform-box: fill-box; transform-origin: center; transition: transform .32s cubic-bezier(.22,.72,.28,1); }
+#crm-root .photo-node.is-active .node-disc { transform: scale(1.14); }
+#crm-root .node-ring { opacity: 0; transition: opacity .32s ease; }
+#crm-root .photo-node.is-active .node-ring { opacity: 1; }
+#crm-root .node-caption { transition: transform .32s cubic-bezier(.22,.72,.28,1); }
+#crm-root .photo-node.is-active .node-caption { transform: translateY(16px); }
+#crm-root #crm-route-map [id^="crm-breakpoint-"] { cursor: pointer; }
+#crm-root .route-casing { fill: none; stroke: #FFFFFF; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; opacity: .94; }
+#crm-root .route { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+#crm-root .cycle { stroke: var(--cycle); }
+#crm-root .walk { stroke: var(--walk); }
+#crm-root .base-map { filter: saturate(.48) contrast(.90) brightness(1.055); opacity: .80; }
+#crm-root .photo-image { opacity: 0; transition: opacity .25s ease; }
+#crm-root .photo-image.loaded { opacity: 1; }
+@media print {
+  #crm-root { background: #FFFFFF; max-width: none; }
+  #crm-root .crm-main { max-width: none; }
+  #crm-root svg { width: 100%; }
+}
+</style>
+<div id="crm-root">
+<div class="crm-main">
+<svg viewBox="0 0 1440 1520" role="img" aria-labelledby="crm-svg-title crm-svg-desc" xmlns="http://www.w3.org/2000/svg">
+  <title id="crm-svg-title">上水至粉嶺實地騎行路線的五個斷點</title>
+  <desc id="crm-svg-desc">單車徑使用海港藍，人行道使用赭紅。五個現場照片佔位按上排三個、下排兩個錯落排列，並以虛線按順序連接。路線保留繞圈與實際末段。</desc>
+  <defs>
+    <clipPath id="crm-map-clip">
+      <rect x="224.4792" y="441.7708" width="1088.75" height="589.7396" rx="3"/>
+    </clipPath>
+    <clipPath id="crm-photo-clip-1"><circle cx="0" cy="0" r="100"/></clipPath>
+    <clipPath id="crm-photo-clip-2"><circle cx="0" cy="0" r="100"/></clipPath>
+    <clipPath id="crm-photo-clip-3"><circle cx="0" cy="0" r="100"/></clipPath>
+    <clipPath id="crm-photo-clip-4"><circle cx="0" cy="0" r="100"/></clipPath>
+    <clipPath id="crm-photo-clip-5"><circle cx="0" cy="0" r="100"/></clipPath>
+    <filter id="crm-soft-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#423A34" flood-opacity=".12"/>
+    </filter>
+  </defs>
+
+  <!-- Header -->
+  <text x="60" y="84" class="title">一條2.2公里的單車徑，三度中斷</text>
+  <text x="60" y="118" class="subtitle">實地騎車考察路線</text>
+
+  <!-- Staggered photo timeline, shifted right as one block. Terminals frame the sequence. -->
+  <g id="crm-photo-timeline" transform="translate(484 0)">
+  <g id="crm-photo-connectors">
+    <path class="photo-connector" d="M-84 262 H42"/>
+    <path class="photo-connector" d="M258 262 H342"/>
+    <path class="photo-connector" d="M558 262 H642"/>
+    <path class="photo-connector stepped" d="M858 262 H904 V562 H858"/>
+    <path class="photo-connector" d="M642 562 H558"/>
+    <path class="photo-connector" d="M238 562 H342"/>
+  </g>
+
+  <g id="crm-timeline-terminals">
+    <text x="-110" y="257" text-anchor="middle" class="terminal-main">起點</text>
+    <text x="-110" y="279" text-anchor="middle" class="terminal-sub">彩園邨</text>
+    <text x="190" y="557" text-anchor="middle" class="terminal-main">終點</text>
+    <text x="190" y="579" text-anchor="middle" class="terminal-sub">北區政府合署</text>
+  </g>
+
+  <!-- Photo placeholders: put images in photos/breakpoint-1.jpg ... breakpoint-5.jpg -->
+  <g id="crm-photo-nodes">
+    <g id="crm-photo-node-1" class="photo-node" transform="translate(150 262)">
+      <g class="node-disc">
+        <circle r="104" fill="#FFFFFF"/><circle r="100" fill="#EEEAE5"/>
+        <g transform="translate(-29 -36) scale(1.4)" fill="none" stroke="#AAA29A" stroke-width="1.7"><rect width="42" height="32" rx="3"/><circle cx="30" cy="9" r="4"/><path d="M4 27 L15 15 L22 22 L28 17 L38 27"/></g>
+        <text y="24" text-anchor="middle" class="photo-placeholder">現場照片</text>
+        <image id="crm-photo-image-1" class="photo-image" x="-100" y="-100" width="200" height="200" preserveAspectRatio="xMidYMid slice" clip-path="url(#crm-photo-clip-1)"/>
+        <circle cx="-55" cy="55" r="19" fill="#C4502A"/><text x="-55" y="55" class="photo-number">1</text>
+        <circle class="node-ring" r="106" fill="none" stroke="#C4502A" stroke-width="8"/>
+      </g>
+      <g class="node-caption">
+        <text y="126" text-anchor="middle" class="photo-label">斷點 01</text><text y="146" text-anchor="middle" class="photo-sub">單車徑 → 人行道</text>
+      </g>
+    </g>
+    <g id="crm-photo-node-2" class="photo-node" transform="translate(450 262)">
+      <g class="node-disc">
+        <circle r="104" fill="#FFFFFF"/><circle r="100" fill="#EEEAE5"/>
+        <g transform="translate(-29 -36) scale(1.4)" fill="none" stroke="#AAA29A" stroke-width="1.7"><rect width="42" height="32" rx="3"/><circle cx="30" cy="9" r="4"/><path d="M4 27 L15 15 L22 22 L28 17 L38 27"/></g>
+        <text y="24" text-anchor="middle" class="photo-placeholder">現場照片</text>
+        <image id="crm-photo-image-2" class="photo-image" x="-100" y="-100" width="200" height="200" preserveAspectRatio="xMidYMid slice" clip-path="url(#crm-photo-clip-2)"/>
+        <circle cx="-55" cy="55" r="19" fill="#C4502A"/><text x="-55" y="55" class="photo-number">2</text>
+        <circle class="node-ring" r="106" fill="none" stroke="#C4502A" stroke-width="8"/>
+      </g>
+      <g class="node-caption">
+        <text y="126" text-anchor="middle" class="photo-label">斷點 02</text><text y="146" text-anchor="middle" class="photo-sub">人行道 → 單車徑</text>
+      </g>
+    </g>
+    <g id="crm-photo-node-3" class="photo-node" transform="translate(750 262)">
+      <g class="node-disc">
+        <circle r="104" fill="#FFFFFF"/><circle r="100" fill="#EEEAE5"/>
+        <g transform="translate(-29 -36) scale(1.4)" fill="none" stroke="#AAA29A" stroke-width="1.7"><rect width="42" height="32" rx="3"/><circle cx="30" cy="9" r="4"/><path d="M4 27 L15 15 L22 22 L28 17 L38 27"/></g>
+        <text y="24" text-anchor="middle" class="photo-placeholder">現場照片</text>
+        <image id="crm-photo-image-3" class="photo-image" x="-100" y="-100" width="200" height="200" preserveAspectRatio="xMidYMid slice" clip-path="url(#crm-photo-clip-3)"/>
+        <circle cx="-55" cy="55" r="19" fill="#C4502A"/><text x="-55" y="55" class="photo-number">3</text>
+        <circle class="node-ring" r="106" fill="none" stroke="#C4502A" stroke-width="8"/>
+      </g>
+      <g class="node-caption">
+        <text y="126" text-anchor="middle" class="photo-label">斷點 03</text><text y="146" text-anchor="middle" class="photo-sub">單車徑 → 人行道</text>
+      </g>
+    </g>
+    <g id="crm-photo-node-4" class="photo-node" transform="translate(750 562)">
+      <g class="node-disc">
+        <circle r="104" fill="#FFFFFF"/><circle r="100" fill="#EEEAE5"/>
+        <g transform="translate(-29 -36) scale(1.4)" fill="none" stroke="#AAA29A" stroke-width="1.7"><rect width="42" height="32" rx="3"/><circle cx="30" cy="9" r="4"/><path d="M4 27 L15 15 L22 22 L28 17 L38 27"/></g>
+        <text y="24" text-anchor="middle" class="photo-placeholder">現場照片</text>
+        <image id="crm-photo-image-4" class="photo-image" x="-100" y="-100" width="200" height="200" preserveAspectRatio="xMidYMid slice" clip-path="url(#crm-photo-clip-4)"/>
+        <circle cx="-55" cy="55" r="19" fill="#C4502A"/><text x="-55" y="55" class="photo-number">4</text>
+        <circle class="node-ring" r="106" fill="none" stroke="#C4502A" stroke-width="8"/>
+      </g>
+      <g class="node-caption">
+        <text y="126" text-anchor="middle" class="photo-label">斷點 04</text><text y="146" text-anchor="middle" class="photo-sub">人行道 → 單車徑</text>
+      </g>
+    </g>
+    <g id="crm-photo-node-5" class="photo-node" transform="translate(450 562)">
+      <g class="node-disc">
+        <circle r="104" fill="#FFFFFF"/><circle r="100" fill="#EEEAE5"/>
+        <g transform="translate(-29 -36) scale(1.4)" fill="none" stroke="#AAA29A" stroke-width="1.7"><rect width="42" height="32" rx="3"/><circle cx="30" cy="9" r="4"/><path d="M4 27 L15 15 L22 22 L28 17 L38 27"/></g>
+        <text y="24" text-anchor="middle" class="photo-placeholder">現場照片</text>
+        <image id="crm-photo-image-5" class="photo-image" x="-100" y="-100" width="200" height="200" preserveAspectRatio="xMidYMid slice" clip-path="url(#crm-photo-clip-5)"/>
+        <circle cx="-55" cy="55" r="19" fill="#C4502A"/><text x="-55" y="55" class="photo-number">5</text>
+        <circle class="node-ring" r="106" fill="none" stroke="#C4502A" stroke-width="8"/>
+      </g>
+      <g class="node-caption">
+        <text y="126" text-anchor="middle" class="photo-label">斷點 05</text><text y="146" text-anchor="middle" class="photo-sub">單車徑 → 人行道</text>
+      </g>
+    </g>
+  </g>
+  </g>
+
+  <!--
+    Map section. The base map was cropped to its core area (250,110,1560x845),
+    then this whole group is scaled by 1.2307692 so the frame keeps its original
+    1340 x 725.8 size at (50, 750). Base map and route share this one transform,
+    so their relative position cannot drift. The legend sits outside the group
+    and keeps its original type size.
+  -->
+  <g id="crm-map-section" transform="translate(-226.2821 206.2821) scale(1.2307692)">
+  <!-- Base map supplied by the user; no external map service is loaded. -->
+  <g clip-path="url(#crm-map-clip)">
+    <image id="crm-base-map" x="224.4792" y="441.7708" width="1088.75" height="589.7396" preserveAspectRatio="none" class="base-map"/>
+    <rect x="224.4792" y="441.7708" width="1088.75" height="589.7396" fill="#FFFFFF" opacity=".10"/>
+  </g>
+  <rect x="224.4792" y="441.7708" width="1088.75" height="589.7396" rx="3" fill="none" stroke="#DDD7D0" stroke-width="1"/>
+
+  <!--
+    Route coordinates below are in the original 1080 x 649 map reference frame.
+    Segment order: start-1 cycle; 1-2 walk; 2-3 cycle; 3-4 walk;
+    4-5 cycle (former 4-5 plus 5-6 merged); 5-end walk (former 6-end).
+    Former breakpoint 5 was a traffic-light junction, not a discontinuity.
+    The walking loop and the actual V-shaped end are retained.
+  -->
+  <g id="crm-route-map" transform="translate(50 365) scale(1.2407407407)">
+    <g aria-hidden="true">
+      <path class="route-casing" d="M286 211 C320 218 350 231 376 238 C396 244 408 248 418 251"/>
+      <path class="route-casing" d="M418 251 C455 263 500 282 540 296 C552 290 562 282 563.3 275.8 C569 272 575 266 579.3 261.2 C588 254 590 240 580.7 237.2 C572.7 234.5 560 239.8 547.3 251.2 L489.3 196.5 C493 211 510 224 518.7 236.5 L577.3 296.5 C583 300 585 302 588 305"/>
+      <path class="route-casing" d="M588 305 C600 323 617 340 635 357 C655 376 674 394 697 412"/>
+      <path class="route-casing" d="M697 412 C725 417 752 421 778 423"/>
+      <path class="route-casing" d="M778 423 C790 430 800 438 807 446 C814 453 822 461 830 468"/>
+      <path class="route-casing" d="M830 468 L845 484 Q852 489 856 478 L863 452"/>
+    </g>
+    <g id="crm-route-segments">
+      <path id="crm-segment-start-1" class="route cycle" d="M286 211 C320 218 350 231 376 238 C396 244 408 248 418 251"/>
+      <path id="crm-segment-1-2" class="route walk" d="M418 251 C455 263 500 282 540 296 C552 290 562 282 563.3 275.8 C569 272 575 266 579.3 261.2 C588 254 590 240 580.7 237.2 C572.7 234.5 560 239.8 547.3 251.2 L489.3 196.5 C493 211 510 224 518.7 236.5 L577.3 296.5 C583 300 585 302 588 305"/>
+      <path id="crm-segment-2-3" class="route cycle" d="M588 305 C600 323 617 340 635 357 C655 376 674 394 697 412"/>
+      <path id="crm-segment-3-4" class="route walk" d="M697 412 C725 417 752 421 778 423"/>
+      <path id="crm-segment-4-5" class="route cycle" d="M778 423 C790 430 800 438 807 446 C814 453 822 461 830 468"/>
+      <path id="crm-segment-5-end" class="route walk" d="M830 468 L845 484 Q852 489 856 478 L863 452"/>
+    </g>
+
+    <!-- Start -->
+    <circle cx="286" cy="211" r="9" fill="#FFFFFF" stroke="#2B6CB0" stroke-width="3"/>
+    <circle cx="286" cy="211" r="3" fill="#2B6CB0"/>
+    <g transform="translate(212 174)" filter="url(#crm-soft-shadow)">
+      <rect x="0" y="0" width="90" height="27" rx="13.5" fill="#FFFFFF"/>
+      <text x="45" y="18" text-anchor="middle" class="map-label">起點 START</text>
+    </g>
+
+    <!-- Breakpoints with supplied WGS84 coordinates stored as data attributes. -->
+    <g id="crm-breakpoint-1" data-lat="22.498950833730433" data-lon="114.12857900555558">
+      <circle cx="418" cy="251" r="26" fill="none" pointer-events="all"/>
+      <circle cx="418" cy="251" r="15" fill="#FFFFFF" stroke="#C4502A" stroke-width="2.5"/>
+      <text x="418" y="251" class="map-number">1</text>
+    </g>
+    <g id="crm-breakpoint-2" data-lat="22.49779734391814" data-lon="114.13225750557483">
+      <circle cx="588" cy="305" r="26" fill="none" pointer-events="all"/>
+      <circle cx="588" cy="305" r="15" fill="#FFFFFF" stroke="#C4502A" stroke-width="2.5"/>
+      <text x="588" y="305" class="map-number">2</text>
+    </g>
+    <g id="crm-breakpoint-3" data-lat="22.495749338291603" data-lon="114.13458746084017">
+      <circle cx="697" cy="412" r="26" fill="none" pointer-events="all"/>
+      <circle cx="697" cy="412" r="15" fill="#FFFFFF" stroke="#C4502A" stroke-width="2.5"/>
+      <text x="697" y="412" class="map-number">3</text>
+    </g>
+    <g id="crm-breakpoint-4" data-lat="22.495300865859974" data-lon="114.13665853218714">
+      <circle cx="778" cy="423" r="26" fill="none" pointer-events="all"/>
+      <circle cx="778" cy="423" r="15" fill="#FFFFFF" stroke="#C4502A" stroke-width="2.5"/>
+      <text x="778" y="423" class="map-number">4</text>
+    </g>
+    <g id="crm-breakpoint-5" data-lat="22.49460064785797" data-lon="114.13753633897309">
+      <circle cx="830" cy="468" r="26" fill="none" pointer-events="all"/>
+      <circle cx="830" cy="468" r="15" fill="#FFFFFF" stroke="#C4502A" stroke-width="2.5"/>
+      <text x="830" y="468" class="map-number">5</text>
+    </g>
+
+    <!-- Actual destination, reached by the red-line correction from the earlier discussion. -->
+    <circle cx="863" cy="452" r="10" fill="#2B6CB0" stroke="#FFFFFF" stroke-width="3"/>
+    <circle cx="863" cy="452" r="3" fill="#FFFFFF"/>
+    <g transform="translate(878 431)" filter="url(#crm-soft-shadow)">
+      <rect x="0" y="0" width="88" height="27" rx="13.5" fill="#FFFFFF"/>
+      <text x="44" y="18" text-anchor="middle" class="map-label">終點 END</text>
+    </g>
+  </g>
+  </g>
+  <!-- Legend moved into the lower-left corner of the map. -->
+  <g id="crm-map-legend" transform="translate(72 1377)">
+    <rect x="0" y="0" width="224" height="74" rx="10" fill="#FFFFFF" opacity=".94" stroke="#E1DBD4" stroke-width="1"/>
+    <line x1="16" y1="24" x2="58" y2="24" stroke="#2B6CB0" stroke-width="6" stroke-linecap="round"/>
+    <text x="72" y="29" class="legend-text">單車徑</text>
+    <line x1="16" y1="50" x2="58" y2="50" stroke="#C4502A" stroke-width="6" stroke-linecap="round"/>
+    <text x="72" y="55" class="legend-text">人行道</text>
+  </g>
+</svg>
+</div>
+</div>
+<script>
+(function () {
+  // 只需要改這一個常數，就能把整個元件搬到任何目錄 / CDN。
+  // 例如資源放在 https://example.com/story/ 時設為 "https://example.com/story/"
+  var ASSET_BASE = "";
+
+  var base = document.getElementById("crm-base-map");
+  if (base) base.setAttribute("href", ASSET_BASE + "map-base.jpg");
+
+  [1, 2, 3, 4, 5].forEach(function (i) {
+    var src = ASSET_BASE + "photos/breakpoint-" + i + ".jpg";
+    var probe = new Image();
+    probe.onload = function () {
+      var target = document.getElementById("crm-photo-image-" + i);
+      if (!target) return;
+      target.setAttribute("href", src);
+      target.classList.add("loaded");
+    };
+    probe.src = src;
+  });
+
+  var markers = document.querySelectorAll('#crm-route-map [id^="crm-breakpoint-"]');
+  function setActive(i, on) {
+    var node = document.getElementById("crm-photo-node-" + i);
+    if (node) node.classList.toggle("is-active", on);
+  }
+  markers.forEach(function (marker) {
+    var i = marker.id.replace("crm-breakpoint-", "");
+    marker.addEventListener("pointerenter", function () { setActive(i, true); });
+    marker.addEventListener("pointerleave", function () { setActive(i, false); });
+  });
+})();
+</script>

@@ -1,257 +1,234 @@
-<!doctype html>
-<html lang="zh-Hant">
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>新界單車徑每公里約有 5 處斷口</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【數據】在新界踩單車代步：路要接得上，車要有處泊</title>
+<meta name="description" content="本報比對運輸署515個公共單車泊位地點與135個新界公共屋邨，發現近七成屋邨500米內有泊位，葵青25個卻全部落空。單車徑與泊位如何決定一程代步？">
+<meta name="theme-color" content="#1F3A5F">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【數據】在新界踩單車代步：路要接得上，車要有處泊">
+<meta property="og:description" content="近七成新界屋邨500米內有公共單車泊位，葵青25個全部落空。單車徑與泊位的接駁，決定居民能否以單車代步。">
+<meta property="og:locale" content="zh_HK">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap">
-<style>
-:root{
-  --navy:#162946; --mute:#5b6573; --orange:#F26B1D; --lorange:#FAB37A; --road:#EDF0F5; --line:#dfe3ea;
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=20261104-single-line">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231F3A5F'/%3E%3Ccircle cx='10' cy='21' r='5' fill='none' stroke='%23fff' stroke-width='2'/%3E%3Ccircle cx='23' cy='21' r='5' fill='none' stroke='%23fff' stroke-width='2'/%3E%3Cpath d='M10 21l4-7h6l3 7' fill='none' stroke='%23C4502A' stroke-width='2'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "【數據】在新界踩單車代步：路要接得上，車要有處泊",
+  "datePublished": "2026-11-03",
+  "inLanguage": "zh-Hant-HK",
+  "publisher": {"@type": "Organization", "name": "家寶集"},
+  "description": "本報比對運輸署515個公共單車泊位地點與135個新界公共屋邨，發現近七成屋邨500米內有泊位，葵青25個卻全部落空。"
 }
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:#fff;color:var(--navy);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.5}
-.wrap{max-width:1000px;margin:0 auto;padding:0 clamp(24px,7vw,72px)}
-header{padding:48px 0 16px}
-h1{font-size:clamp(28px,4.2vw,52px);line-height:1.2;margin:0 0 10px}
-.lead{color:var(--mute);font-size:clamp(15px,1.6vw,18px);margin:0;max-width:60em}
-.hint{color:var(--mute);font-size:14px;margin:6px 0 0}
-/* ---------- maps ---------- */
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px 28px;margin:32px 0 8px}
-@media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:620px){.grid{grid-template-columns:1fr}}
-.card h2{font-size:20px;margin:0}
-.card .sub{color:var(--mute);font-size:14px;margin:2px 0 10px}
-.map{position:relative;aspect-ratio:1/1;overflow:hidden;background:#e7e8ea;cursor:crosshair;touch-action:pan-y;border-radius:4px}
-.stage{position:absolute;inset:0}
-.stage img{position:absolute;left:0;top:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
-.stage .trk{filter:drop-shadow(0 0 2.5px rgba(255,140,40,.9))}
-.hl{position:absolute;border:2px solid var(--navy);background:rgba(255,255,255,.12);pointer-events:none;display:none}
-.zoom{position:absolute;width:52%;aspect-ratio:1/1;overflow:hidden;background:#e7e8ea;border:3px solid #fff;box-shadow:0 6px 22px rgba(0,0,0,.35);pointer-events:none;display:none}
-.zoom .zstage{position:absolute}
-.zoom .zstage img{position:absolute;left:0;top:0;width:100%;height:100%}
-.zoom .zstage .trk{filter:drop-shadow(0 0 3px rgba(255,140,40,.9))}
-.zoom .tag{position:absolute;left:6px;bottom:6px;background:rgba(22,41,70,.85);color:#fff;font-size:12px;padding:1px 7px;border-radius:2px}
-.map.on .hl,.map.on .zoom{display:block}
-/* ---------- legends ---------- */
-.legend{display:flex;flex-wrap:wrap;gap:4px 16px;list-style:none;margin:10px 0 0;padding:0;font-size:13px;color:var(--mute)}
-.legend li{display:flex;align-items:center;gap:7px}
-.legend svg{flex:none}
-.src{color:var(--mute);font-size:13px;margin:22px 0 0}
-/* ---------- bar chart ---------- */
-section.bars{margin:56px 0 0;padding-bottom:64px}
-section.bars h2{font-size:clamp(24px,3.4vw,44px);line-height:1.2;margin:0}
-section.bars .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0 0}
-.chart{position:relative;margin-top:28px;border-radius:4px;overflow:hidden}
-.plot{display:grid;grid-template-columns:repeat(9,1fr);align-items:end;position:relative;height:clamp(360px,62vw,640px);padding:30px 4px 0 46px}
-.axis{position:absolute;left:0;right:0;top:30px;bottom:0;pointer-events:none}
-.tick{position:absolute;left:0;right:0;border-top:1px solid #e3e6ec;height:0}
-.tick span{position:absolute;left:0;top:-9px;width:38px;text-align:right;font-size:clamp(11px,1.3vw,14px);color:var(--mute);background:#fff;line-height:18px}
-.tick:first-child{border-top:0}
-.axis .ttl{position:absolute;left:0;top:-26px;font-size:clamp(11px,1.3vw,14px);color:var(--mute)}
-.col{position:relative;z-index:1}
-.col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
-.num{font-weight:700;font-size:clamp(16px,2.6vw,32px);margin-bottom:6px}
-.bar{width:62%;max-width:100px;background:var(--lorange);border-radius:10px 10px 0 0;position:relative;display:flex;justify-content:center;align-items:flex-start}
-.bar span{writing-mode:vertical-rl;text-orientation:sideways;transform:rotate(180deg);font-weight:700;font-size:clamp(11px,1.7vw,22px);color:var(--navy);white-space:nowrap}
-.bar{height:0;overflow:hidden;transition:height 1.3s cubic-bezier(.22,.9,.25,1) var(--d,0s)}
-.bar span{margin-top:12px;opacity:0;transition:opacity .6s ease calc(var(--d,0s) + .9s)}
-.num{opacity:0;transform:translateY(10px);transition:opacity .6s ease calc(var(--d,0s) + .8s),transform .6s ease calc(var(--d,0s) + .8s)}
-.rider{opacity:0;transform:translateX(-40px);transition:opacity .8s ease 1.2s,transform 1.2s cubic-bezier(.2,.8,.2,1) 1.2s}
-.chart.in .bar{height:var(--h)}
-.chart.in .bar span,.chart.in .num{opacity:1;transform:none}
-.chart.in .rider{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.bar,.bar span,.num,.rider{transition:none!important}}
-.col.hi .bar{background:var(--orange)}
-.col.hi .bar span{color:#fff}
-.col.hi .num{color:var(--orange)}
-.road{position:relative;height:clamp(60px,10vw,110px);background:var(--road)}
-.road:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--orange)}
-.road:after{content:"";z-index:0;position:absolute;left:0;right:0;top:55%;border-top:4px dashed #fff}
-.rider{z-index:1;position:absolute;bottom:6%;height:150%;aspect-ratio:513/480;pointer-events:none}
-.legend.big{font-size:14px;margin-top:14px}
-/* ---------- parking layers (fixed geometry copied from the Figma frame, scaled with the container) ---------- */
-section.stack{margin:8px 0 0;padding:56px 0 64px;border-top:1px solid var(--line)}
-section.stack h2{font-size:clamp(24px,3.4vw,44px);line-height:1.2;margin:0}
-section.stack .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0 0}
-.pdot{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:15px;color:var(--navy)}
-.pdot i{width:14px;height:14px;border-radius:50%;background:#E5311F;display:inline-block}
-.figscroll{position:relative;width:100vw;max-width:1240px;margin-top:8px;margin-left:50%;transform:translateX(-50%);overflow-x:auto;overflow-y:hidden}
-.fig{position:relative;min-width:860px;width:100%;aspect-ratio:1600/2790;container-type:inline-size;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
-.fig svg.g{position:absolute;inset:0;width:100%;height:100%;display:block}
-.fig .a{position:absolute;margin:0;white-space:nowrap}
-.fig img.a{display:block}
-.fig .dsc{white-space:normal}
-footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--mute);font-size:13px}
-</style>
+</script>
+<link rel="stylesheet" href="assets/animation/journey.css?v=20261104-serif-heading">
 </head>
 <body>
-<header class="wrap">
-  <h1>新界單車徑每公里約有 5 處斷口</h1>
-  <p class="lead">單車徑走到盡頭、沒有接上其他單車徑的地方，在地圖上以黑色粗線標示。每張地圖都可以把滑鼠移上去（手機用手指按住滑動），旁邊會出現放大圖。</p>
-  <p class="hint">斷口：單車徑線段端點與最近的其他線段相距超過 10 米處（10 米容差）。</p>
-</header>
+<a class="skip-link" href="#story">跳至報道正文</a>
 
-<main class="wrap">
-  <div class="grid" id="grid"></div>
-  <p class="src">資料來源：運輸署　底圖：© 地政總署　製圖：於夏涵</p>
 
-  <section class="bars" aria-labelledby="bt">
-    <h2 id="bt">上水／粉嶺斷口最多，天水圍居次</h2>
-    <p class="sub">新界單車徑共有 1,288 處斷口</p>
-    <div class="chart">
-      <div class="plot" id="plot" role="img" aria-label="九個分區的斷口數長條圖"></div>
-      <div class="road" id="road"></div>
-    </div>
-    <ul class="legend big">
-      <li><svg width="22" height="14"><rect width="22" height="14" rx="3" fill="#F26B1D"/></svg>斷口最多的兩個區</li>
-      <li><svg width="22" height="14"><rect width="22" height="14" rx="3" fill="#FAB37A"/></svg>其他分區</li>
-      <li>長條上方數字＝斷口數（處）；由西向東排列</li>
-    </ul>
-    <p class="src">資料來源：運輸署　製圖：於夏涵</p>
-  </section>
 
-  <section class="stack" aria-labelledby="st">
-    <h2 id="st">市區鐵路出入口密集，附近卻幾乎沒有公共單車泊位記錄</h2>
-    <p class="sub">同一張香港地圖拆成六層：每層只畫一類內容，看它 500 米內有沒有泊位點</p>
-    <span class="pdot"><i></i>圓點＝運輸署公共單車泊位點（與各層標籤同色）</span>
-    <div class="figscroll"><div class="fig" role="group" aria-label="六層分層地圖：鐵路出入口、公共屋邨、房委會商場、工商業樓宇、樓齡50年以上住宅、公共單車泊位">
-      <svg class="g" viewBox="0 270 1600 2790" preserveAspectRatio="none" aria-hidden="true">
-        <g stroke="#CCD1DE" stroke-opacity=".45" stroke-width="1"  fill="none"><line x1="-200" y1="300" x2="1947" y2="-773.5"/><line x1="-200" y1="1200" x2="1947" y2="2273.5"/><line x1="-200" y1="630" x2="1947" y2="-443.5"/><line x1="-200" y1="1530" x2="1947" y2="2603.5"/><line x1="-200" y1="960" x2="1947" y2="-113.5"/><line x1="-200" y1="1860" x2="1947" y2="2933.5"/><line x1="-200" y1="1290" x2="1947" y2="216.5"/><line x1="-200" y1="2190" x2="1947" y2="3263.5"/><line x1="-200" y1="1620" x2="1947" y2="546.5"/><line x1="-200" y1="2520" x2="1947" y2="3593.5"/><line x1="-200" y1="1950" x2="1947" y2="876.5"/><line x1="-200" y1="2850" x2="1947" y2="3923.5"/><line x1="-200" y1="2280" x2="1947" y2="1206.5"/><line x1="-200" y1="3180" x2="1947" y2="4253.5"/><line x1="-200" y1="2610" x2="1947" y2="1536.5"/><line x1="-200" y1="3510" x2="1947" y2="4583.5"/><line x1="-200" y1="2940" x2="1947" y2="1866.5"/><line x1="-200" y1="3840" x2="1947" y2="4913.5"/></g>
-        <g stroke="#CCD1DE" stroke-opacity=".9" stroke-width="1"><line x1="120" y1="300" x2="120" y2="3060"/><line x1="1120" y1="300" x2="1120" y2="3060"/></g>
-      </svg>
-      <img class="a" src="assets/park_layer_1.webp" alt="圖層 1：鐵路出入口與港鐵線路" loading="lazy" style="left:7.5000cqw;top:3.7500cqw;width:62.5000cqw;height:31.3750cqw">
-      <svg class="a" style="left:70.2500cqw;top:22.3125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#E58A1F" stroke-width="2" stroke-dasharray="4 4"/></svg>
-      <span class="a" style="left:75.0000cqw;top:21.3125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#E58A1F"></span>
-      <span class="a" style="left:75.0000cqw;top:21.5625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">1</span>
-      <span class="a" style="left:78.0000cqw;top:17.2500cqw;color:#E58A1F;font-weight:700;font-size:2.0000cqw;line-height:1.188">鐵路出入口</span>
-      <span class="a" style="left:78.0000cqw;top:19.6250cqw;color:#E58A1F;font-weight:700;font-size:4.7500cqw;line-height:1.197">31.7%</span>
-      <span class="a" style="left:78.0000cqw;top:24.9375cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.2">附近錄有泊位</span>
-      <span class="a dsc" style="left:78.0000cqw;top:27.0625cqw;width:21.0000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">共 624 個出入口；彩線＝港鐵線路，淺灰線＝主要道路；圓圈＝出入口 500 米範圍（藍＝有泊位，灰＝沒有）；橙點＝泊位點</span>
-      <img class="a" src="assets/park_layer_2.webp" alt="圖層 2：公共屋邨" loading="lazy" style="left:7.5000cqw;top:31.2500cqw;width:62.5000cqw;height:31.3750cqw">
-      <svg class="a" style="left:70.2500cqw;top:49.8125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#F08A24" stroke-width="2" stroke-dasharray="4 4"/></svg>
-      <span class="a" style="left:75.0000cqw;top:48.8125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#F08A24"></span>
-      <span class="a" style="left:75.0000cqw;top:49.0625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">2</span>
-      <span class="a" style="left:78.0000cqw;top:44.7500cqw;color:#F08A24;font-weight:700;font-size:2.0000cqw;line-height:1.188">公共屋邨</span>
-      <span class="a" style="left:78.0000cqw;top:47.1250cqw;color:#F08A24;font-weight:700;font-size:4.7500cqw;line-height:1.197">40.4%</span>
-      <span class="a" style="left:78.0000cqw;top:52.4375cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.2">附近錄有泊位</span>
-      <span class="a dsc" style="left:78.0000cqw;top:54.5625cqw;width:21.0000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">共 245 個屋邨；每個房子＝屋邨的一座樓；橙屋頂＝500 米內有泊位（99 個屋邨），灰＝沒有；橙點＝泊位點</span>
-      <img class="a" src="assets/park_layer_3.webp" alt="圖層 3：房委會商場" loading="lazy" style="left:7.5000cqw;top:58.7500cqw;width:62.5000cqw;height:31.3750cqw">
-      <svg class="a" style="left:70.2500cqw;top:77.3125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#7B3FA0" stroke-width="2" stroke-dasharray="4 4"/></svg>
-      <span class="a" style="left:75.0000cqw;top:76.3125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#7B3FA0"></span>
-      <span class="a" style="left:75.0000cqw;top:76.5625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">3</span>
-      <span class="a" style="left:78.0000cqw;top:72.2500cqw;color:#7B3FA0;font-weight:700;font-size:2.0000cqw;line-height:1.188">房委會商場</span>
-      <span class="a" style="left:78.0000cqw;top:74.6250cqw;color:#7B3FA0;font-weight:700;font-size:4.7500cqw;line-height:1.197">44.6%</span>
-      <span class="a" style="left:78.0000cqw;top:79.9375cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.2">附近錄有泊位</span>
-      <span class="a dsc" style="left:78.0000cqw;top:82.0625cqw;width:21.0000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">共 56 處；每棟灰色商場＝一個商場；紫色招牌＝500 米內有泊位（25 個商場），灰色招牌＝沒有；紫點＝泊位點</span>
-      <img class="a" src="assets/park_layer_4.webp" alt="圖層 4：工商業樓宇" loading="lazy" style="left:7.5000cqw;top:86.2500cqw;width:62.5000cqw;height:31.3750cqw">
-      <svg class="a" style="left:70.2500cqw;top:104.8125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#C98200" stroke-width="2" stroke-dasharray="4 4"/></svg>
-      <span class="a" style="left:75.0000cqw;top:103.8125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#C98200"></span>
-      <span class="a" style="left:75.0000cqw;top:104.0625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">4</span>
-      <span class="a" style="left:78.0000cqw;top:99.7500cqw;color:#C98200;font-weight:700;font-size:2.0000cqw;line-height:1.188">工商業樓宇</span>
-      <span class="a" style="left:78.0000cqw;top:102.1250cqw;color:#C98200;font-weight:700;font-size:4.7500cqw;line-height:1.197">17.3%</span>
-      <span class="a" style="left:78.0000cqw;top:107.4375cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.2">附近錄有泊位</span>
-      <span class="a dsc" style="left:78.0000cqw;top:109.5625cqw;width:21.0000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">共 4,625 個地址；每個房子＝一座工商業樓；琥珀屋頂＝500 米內有泊位（802 個地址），灰＝沒有；琥珀點＝泊位點</span>
-      <img class="a" src="assets/park_layer_5.webp" alt="圖層 5：樓齡 50 年以上住宅" loading="lazy" style="left:7.5000cqw;top:113.7500cqw;width:62.5000cqw;height:31.3750cqw">
-      <svg class="a" style="left:70.2500cqw;top:132.3125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#D6245F" stroke-width="2" stroke-dasharray="4 4"/></svg>
-      <span class="a" style="left:75.0000cqw;top:131.3125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#D6245F"></span>
-      <span class="a" style="left:75.0000cqw;top:131.5625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">5</span>
-      <span class="a" style="left:78.0000cqw;top:127.2500cqw;color:#D6245F;font-weight:700;font-size:2.0000cqw;line-height:1.188">樓齡50年以上住宅</span>
-      <span class="a" style="left:78.0000cqw;top:129.6250cqw;color:#D6245F;font-weight:700;font-size:4.7500cqw;line-height:1.197">17.7%</span>
-      <span class="a" style="left:78.0000cqw;top:134.9375cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.2">附近錄有泊位</span>
-      <span class="a dsc" style="left:78.0000cqw;top:137.0625cqw;width:21.0000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">共 9,205 個地址；每個房子＝一座舊樓；粉紅屋頂＝500 米內有泊位（1,625 個地址），灰＝沒有；粉紅點＝泊位點</span>
-      <img class="a" src="assets/park_layer_6.webp" alt="圖層 6：運輸署公共單車泊位點（3D 地形）" loading="lazy" style="left:7.5000cqw;top:137.5000cqw;width:62.5000cqw;height:35.9375cqw">
-      <svg class="a" style="left:70.2500cqw;top:159.8125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#E5311F" stroke-width="2" stroke-dasharray="4 4"/></svg>
-      <span class="a" style="left:75.0000cqw;top:158.8125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#E5311F"></span>
-      <span class="a" style="left:75.0000cqw;top:159.0625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">6</span>
-      <span class="a" style="left:78.0000cqw;top:157.1250cqw;color:#E5311F;font-weight:700;font-size:1.8750cqw;line-height:1.2">公共單車泊位</span>
-      <span class="a dsc" style="left:78.0000cqw;top:159.6250cqw;width:19.5000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">運輸署 515 個點；3D 地形底圖，紅點＝泊位點</span>
-    </div></div>
-    <p class="src">資料來源：運輸署單車泊位資料；房委會屋邨及商場資料；屋宇署樓宇資料及樓齡紀錄；OpenStreetMap（道路、鐵路出入口、港鐵線路、地形底圖紋理）；高程：AWS Terrain Tiles；記者整理　製圖：於夏涵</p>
-    <p class="src">圖註：500 米為直線距離，按資料位置點計算。工商業記錄按地址合併；舊樓指入伙紙日期為 50 年或以上的住宅／綜合用途樓宇；商場只涵蓋房委會商場；出入口只計香港境內帶出口編號者；港鐵線路不含輕鐵。運輸署資料中市區只有 6 個泊位點，結果可能反映資料覆蓋範圍。屋邨及各類樓宇的房子位置為示意。底圖 © OpenStreetMap contributors。</p>
-  </section>
+<main id="story">
+  <article class="article">
+    <header class="article__head">
+      <h1 class="headline">【數據】在新界踩單車代步：路要接得上，車要有處泊</h1>
+      <p class="standfirst">新界居民已用單車返工、買餸，沿途有時要轉入行車道或下車推行，到埗還要找地方泊車。記者分析運輸署公共泊位資料，發現新界947個工業地址中，逾半在500米直線範圍內未錄得泊位。北部都會區正規劃推動單車代步，現有路網的使用經驗，反映路線與停泊設施如何配合居民日常行程的問題。</p>
+      <dl class="byline" aria-label="製作團隊與刊出日期">
+        <dt>文字</dt><dd>倪晉成、查言潞</dd>
+        <dt>數據</dt><dd>於夏涵、田若雯</dd>
+        <dt>設計</dt><dd>方嘉雨、吳佳栩</dd>
+        <dt>工程</dt><dd>方嘉雨、吳佳栩、陳曉琳</dd>
+        <dt>查核</dt><dd>鄺芍宜</dd>
+        <dt>責任編輯</dt><dd>王悅</dd>
+        <dt>刊出</dt><dd><time datetime="2026-11-03">2026/11/3</time></dd>
+      </dl>
+    </header>
+
+
+    <!-- Scroll narrative followed by revised reporting. -->
+    <section class="cycling-journey" id="cycling-journey" aria-label="從香港單車徑到日常代步的滾動敘事">
+      <div class="journey-stage">
+        <div class="journey-map journey-map--hk"><img src="assets/animation/hong-kong.png" alt="香港單車徑全景，珊瑚色路線分佈在新界及多個地區" fetchpriority="high"><span class="journey-map-title">香港單車徑線路圖</span></div>
+        <svg class="map-ride" viewBox="0 0 1551 1014" aria-hidden="true"><path id="ride-path" opacity="0" d="M490.0 958.0 L494.0 958.0 L502.0 946.0 L498.0 938.0 L498.0 894.0 L522.0 870.0 L530.0 854.0 L530.0 842.0 L534.0 838.0 L534.0 810.0 L538.0 806.0 L538.0 798.0 L546.0 782.0 L550.0 754.0 L566.0 730.0 L566.0 718.0 L570.0 714.0 L570.0 702.0 L574.0 698.0 L574.0 686.0 L578.0 682.0 L582.0 654.0 L602.0 626.0 L602.0 594.0 L614.0 582.0 L614.0 562.0 L654.0 522.0 L654.0 510.0 L670.0 494.0 L670.0 490.0 L722.0 438.0 L734.0 434.0 L782.0 390.0 L786.0 390.0 L802.0 374.0 L806.0 374.0 L834.0 346.0 L842.0 342.0 L850.0 342.0 L858.0 334.0 L890.0 318.0 L898.0 318.0 L918.0 298.0 L922.0 298.0 L946.0 278.0 L966.0 278.0 L974.0 270.0 L974.0 262.0 L994.0 242.0 L1006.0 254.0 L1006.0 262.0 L1014.0 270.0 L1014.0 278.0 L1034.0 298.0" fill="none" stroke="#ed6347" stroke-width="5"/><g id="map-rider"><image href="assets/animation/cyclist.png" x="-58" y="-100" width="116" height="106"/></g></svg><div class="mountain-flight" aria-hidden="true"></div><canvas class="journey-road" aria-hidden="true"></canvas>
+        <div class="journey-side" aria-hidden="true">
+          <svg viewBox="0 0 1311 1200" class="pedalling-rider">
+            <defs><clipPath id="rider-upper"><path d="M0 0H1311V455L960 455 930 480 748 465 710 440 630 350 550 420 430 485 380 535 300 545 285 510 285 440 0 440Z"/></clipPath></defs>
+            <g class="cycle-wheels"></g>
+            <path d="M270 960L400 640 810 640 1030 960 710 1000 400 640M810 640L710 1000 270 960M810 640L835 555M270 960L430 550 330 515" fill="none" stroke="#f97761" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M785 558H895M320 515H375" stroke="#252942" stroke-width="23" stroke-linecap="round"/>
+            <circle cx="710" cy="1000" r="65" stroke="#713021" stroke-width="8" fill="none"/>
+            <g class="rider-leg rider-leg--back"></g><g class="rider-leg rider-leg--front"></g>
+            <image href="assets/animation/cyclist.png" width="1311" height="1200" clip-path="url(#rider-upper)"/>
+          </svg>
+        </div>
+        <div class="journey-walker" aria-hidden="true"><svg viewBox="0 0 440 760">
+<ellipse cx="225" cy="718" rx="150" ry="13" fill="#68645c" opacity=".22"/>
+<path d="M170 128C90 105 95 195 37 179C78 225 142 222 186 175Z" fill="#803627"/>
+<g id="walk-body"><path d="M155 230L193 230L215 335L143 335Z" fill="#ed765e"/>
+<path d="M155 235L137 315L132 397" fill="none" stroke="#f4a080" stroke-width="22" stroke-linecap="round"/>
+<path d="M196 237L221 301L278 321" fill="none" stroke="#f4a080" stroke-width="22" stroke-linecap="round"/>
+<path d="M146 327L210 327L218 404L143 404Z" fill="#893c2c"/>
+<path d="M171 199V233" stroke="#f4a080" stroke-width="24"/>
+<ellipse cx="174" cy="164" rx="32" ry="43" fill="#f7ad8c"/>
+<path d="M140 154Q137 106 175 106Q211 107 210 151Z" fill="#f77e66"/><path d="M135 151Q175 137 217 151" fill="none" stroke="#dc634d" stroke-width="12" stroke-linecap="round"/>
+<path d="M145 162H204" stroke="#292625" stroke-width="5"/><rect x="146" y="157" width="26" height="16" rx="7" fill="#292625"/><rect x="178" y="157" width="26" height="16" rx="7" fill="#292625"/>
+<path d="M166 189Q176 197 186 187" fill="none" stroke="#a84d38" stroke-width="2"/>
+</g><g id="walking-legs" fill="none" stroke-linecap="round"><path id="walk-leg-a" stroke="#f5a385" stroke-width="26"/><path id="walk-leg-b" stroke="#ed9677" stroke-width="26"/><path id="walk-shoe-a" stroke="#fffaf0" stroke-width="23"/><path id="walk-shoe-b" stroke="#fffaf0" stroke-width="23"/></g>
+<g id="walk-bike"><ellipse cx="305" cy="578" rx="16" ry="126" fill="#f7ead4" stroke="#33312d" stroke-width="10"/><path d="M300 459L294 341M278 322L312 327L349 310M278 322L248 314" fill="none" stroke="#36332e" stroke-width="9" stroke-linecap="round"/><path d="M291 409Q311 432 315 504L317 610M290 410L285 609" fill="none" stroke="#ef755c" stroke-width="12"/><path d="M276 512L270 581M276 581H250" fill="none" stroke="#35322e" stroke-width="7"/>
+<path id="walk-wheel-mark" d="M305 487V505M305 548V566M305 609V627M305 667V685" stroke="#8e887d" stroke-width="3"/>
+</g></svg></div><div class="journey-rear" aria-hidden="true"><svg class="front-illustration" id="front-art" viewBox="130 80 460 800" role="img" aria-label="戴珊瑚色帽子和黑色墨镜的长发女性，面对观众持续踩踏自行车">
+<defs>
+ <linearGradient id="front-shirt" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff957c"/><stop offset=".55" stop-color="#f7765d"/><stop offset="1" stop-color="#de5744"/></linearGradient>
+ <linearGradient id="front-skin" x1="0" y1="0" x2="1" y2=".3"><stop stop-color="#ffb398"/><stop offset="1" stop-color="#f38c73"/></linearGradient>
+ <linearGradient id="front-shorts" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a44636"/><stop offset="1" stop-color="#72281f"/></linearGradient>
+ <linearGradient id="front-hair" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#993d2b"/><stop offset=".55" stop-color="#73261e"/><stop offset="1" stop-color="#521b18"/></linearGradient>
+ <linearGradient id="front-tyre" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#532b2a"/><stop offset=".46" stop-color="#252533"/><stop offset=".75" stop-color="#3c3037"/><stop offset="1" stop-color="#612e2b"/></linearGradient>
+ <linearGradient id="front-fork" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ef6b54"/><stop offset=".5" stop-color="#ffa088"/><stop offset="1" stop-color="#d65540"/></linearGradient>
+ <linearGradient id="front-road" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e9b49e" stop-opacity="0"/><stop offset=".5" stop-color="#f1b198" stop-opacity=".22"/><stop offset="1" stop-color="#f18465" stop-opacity=".40"/></linearGradient>
+ <radialGradient id="front-shadow"><stop stop-color="#633829" stop-opacity=".16"/><stop offset="1" stop-color="#633829" stop-opacity="0"/></radialGradient>
+ <clipPath id="front-wheel-clip"><ellipse cx="360" cy="693" rx="21" ry="135"/></clipPath>
+</defs>
+<path d="M348 520L372 520 620 900H100Z" fill="url(#front-road)"/>
+<g id="front-roadmarks" opacity=".5" fill="#fff9ef"></g>
+<ellipse id="front-shadow-shape" cx="360" cy="835" rx="108" ry="19" fill="url(#front-shadow)"/>
+<g id="front-rider">
+ <!-- Wind moves behind the torso; face always looks toward the camera. -->
+ <g id="front-hair-back"><path d="M312 175C277 208 285 249 295 283C276 319 281 355 309 378C345 411 407 386 430 358C465 386 511 365 522 334C532 304 508 281 477 267C441 252 427 221 416 187Z" fill="url(#front-hair)"/><path d="M407 214C418 268 486 279 500 317C511 349 478 363 445 340M313 223C293 272 336 299 319 346M420 282C443 321 471 308 480 338" stroke="#b95138" stroke-width="2.4" fill="none" opacity=".7"/><path d="M421 220C470 254 507 255 522 286M425 210C477 233 518 238 539 274" fill="none" stroke="#8b3225" stroke-width="2"/></g>
+ <path d="M360 499V658M360 547L339 673M360 547L381 673" fill="none" stroke="#cf604a" stroke-width="12" stroke-linecap="round"/>
+ <path d="M335 472Q360 461 385 472" fill="none" stroke="#532b29" stroke-width="14" stroke-linecap="round"/>
+ <g class="flat-leg leg-a"><path d="M319 463L300 555 304 724" fill="none" stroke="#f6a084" stroke-width="27"/><path d="M319 463L308 530" stroke="#8f382c" stroke-width="46"/><path d="M304 691V725" stroke="#fff2df" stroke-width="29"/><path d="M290 729H321" stroke="#ed7054" stroke-width="18"/></g><g class="flat-leg leg-b"><path d="M401 463L420 555 416 724" fill="none" stroke="#f6a084" stroke-width="27"/><path d="M401 463L412 530" stroke="#8f382c" stroke-width="46"/><path d="M416 691V725" stroke="#fff2df" stroke-width="29"/><path d="M402 729H433" stroke="#ed7054" stroke-width="18"/></g>
+ <!-- Front tyre hides the middle of the fork and the crank, as in an actual front view. -->
+ <g id="front-steering">
+ <path d="M352 530Q329 566 331 646M368 530Q391 566 389 646" fill="none" stroke="url(#front-fork)" stroke-width="12" stroke-linecap="round"/>
+ <ellipse cx="360" cy="693" rx="25" ry="143" fill="#302a35"/>
+ <ellipse cx="360" cy="693" rx="17" ry="135" fill="#442c2d"/>
+ <path d="M357 563Q344 688 357 823" stroke="#b9765d" stroke-width="3" fill="none" opacity=".75"/>
+ <g id="front-tread" clip-path="url(#front-wheel-clip)" stroke="#efb99b" stroke-width="1.4" opacity=".35"></g>
+ <path d="M341 582Q360 564 379 582" fill="none" stroke="#f08b6b" stroke-width="6"/>
+ <path d="M360 488V550" stroke="url(#front-fork)" stroke-width="15" stroke-linecap="round"/>
+ <path d="M230 465Q268 467 306 484Q360 507 414 484Q453 467 490 465" fill="none" stroke="#572b29" stroke-width="15" stroke-linecap="round"/>
+ <path d="M242 463Q275 468 309 480Q360 499 411 480Q444 468 478 463" fill="none" stroke="#ff9c7c" stroke-width="7" stroke-linecap="round"/>
+ <path d="M227 465H253M467 465H493" stroke="#26262d" stroke-width="19" stroke-linecap="round"/>
+ <path d="M266 476Q283 526 341 541M454 476Q438 529 379 542" fill="none" stroke="#6f4435" stroke-width="2"/>
+ </g>
+ <g id="front-upper">
+  <path id="front-arm-l" d="M294 324Q268 374 258 404L242 462" fill="none" stroke="#f6a084" stroke-width="25" stroke-linecap="round"/>
+  <path id="front-arm-r" d="M426 324Q452 374 462 404L478 462" fill="none" stroke="#f6a084" stroke-width="25" stroke-linecap="round"/>
+  <g id="front-torso">
+   <path d="M330 269L335 295Q360 319 385 295L390 267" fill="#f6a084"/>
+   <path d="M330 275Q359 300 388 273L384 296Q357 313 336 293Z" fill="#d87860" opacity=".7"/>
+   <path d="M330 285Q312 286 288 305L268 350 302 367 313 346 306 438Q356 458 414 438L407 346 418 367 452 350 432 305Q409 288 389 285Q361 318 330 285Z" fill="#f4775e"/>
+   <path d="M330 285Q357 320 389 285" stroke="#c75742" stroke-width="3" fill="none"/>
+   <path d="M312 346L306 390M409 346L414 390M310 420Q355 440 410 423M337 358Q352 370 378 370" stroke="#c85745" stroke-width="2.5" opacity=".65" fill="none"/>
+   <path d="M310 438Q360 456 414 438L412 466Q358 482 309 466Z" fill="#8f3429"/>
+  </g>
+  <g id="front-head" transform="translate(65 45) scale(.82)">
+   <ellipse cx="309" cy="221" rx="12" ry="18" fill="#f79e81"/><ellipse cx="411" cy="221" rx="12" ry="18" fill="#ee9075"/>
+   <path d="M309 180Q309 143 360 143Q411 143 411 180L404 234Q398 263 360 280Q323 264 316 235Z" fill="#f6a084"/>
+   <path d="M313 179Q312 192 316 216L324 207 326 178M405 178L394 177 398 206 407 215" fill="#7f2d22"/>
+   <path d="M299 178Q296 114 355 111Q419 111 420 178Z" fill="#f4775e"/>
+   <path d="M357 113Q339 139 342 167M363 113Q390 134 394 170" stroke="#ce5945" stroke-width="2.4" fill="none"/>
+   <ellipse cx="359" cy="111" rx="7" ry="4" fill="#91372c"/>
+   <path d="M296 170Q358 153 423 171L429 185Q360 196 291 184Z" fill="#e4644e"/>
+   <path d="M293 180Q359 172 427 181" fill="none" stroke="#a44132" stroke-width="3"/>
+   <path d="M317 207Q334 200 351 207L349 227Q333 241 319 226ZM369 207Q386 200 403 207L401 227Q385 241 371 226Z" fill="#222127"/>
+   <path d="M350 211Q360 205 370 211M307 204L318 209M402 209L412 204" stroke="#252127" stroke-width="5" fill="none"/>
+   <path d="M329 208L342 207M380 208L391 207" stroke="#fff1d8" stroke-width="2" opacity=".18"/>
+   <path d="M360 219L355 239 363 241" stroke="#d17760" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+   <path d="M347 252Q360 260 374 250" fill="none" stroke="#8c3d30" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+ </g>
+ <!-- The hands stay planted at the grips; the upper body rocks subtly around them. -->
+ <g fill="#f6a084"><path d="M231 451Q241 445 251 451L258 467Q255 477 250 477L246 465 244 479 239 479 237 465 236 477 230 475 225 460Z"/><path d="M489 451Q479 445 469 451L462 467Q465 477 470 477L474 465 476 479 481 479 483 465 484 477 490 475 495 460Z"/></g>
+</g>
+</svg></div>
+<div class="journey-copy journey-copy--map"><p>北部都會區(北都)未來的單車徑，政府希望居民們每天都能用上。在現有的新界新市鎮，單車代步早已是規劃的一部分。1982年，政府介紹沙田單車徑規劃時，已提出讓居民踩車往返住所、學校和工作地點，並在市中心、工業區及交通交匯處提供停泊設施。</p></div>
+<div class="journey-copy journey-copy--side"><p>2008年，政府公布推展貫通新界東西的單車徑網絡，建設目的包括提高單車徑的康樂價值，以及改善市民生活質素。新界跨區路網的建設轉向着重康樂。</p><p>2026年5月政府表示，北都未來的單車徑不以康樂為主，而應可作日常代步工具；至於現有新界跨區網絡，則主要供消閒和康樂，也方便短途代步。</p><p class="source">資料來源：<a href="https://search.grs.gov.hk/repository/img?id=KDGvBnOWsAmOG6S%2BjjPw7A%3D%3D&amp;ori=1">1982年政府新聞公報，第3頁</a>；<a href="https://www.aud.gov.hk/pdf_ca/c63ch09sum.pdf">審計署2014年報告摘要，第2段</a>；<a href="https://www.info.gov.hk/gia/general/202605/06/P2026050600259p.htm">2026年5月6日立法會答覆</a>。</p></div>
+<div class="journey-copy journey-copy--front"><p>今天，新界已有連接多區的單車徑，居民也用單車返工、返學和轉乘公共交通。運輸署《2022年交通習慣調查》顯示，全港平日單車行程中，35%往返住所與工作地點，4%往返住所與學校。</p><p class="source"><a href="https://www.td.gov.hk/filemanager/tc/content_5349/tcs2022_chin.pdf#page=35">運輸署《2022年交通習慣調查》第18頁、表3.10</a>。</p></div>
+        <div class="journey-scroll-cue" aria-hidden="true"><span>向下捲動，沿路前行</span><i>↓</i></div>
+        <div class="journey-controls"><button class="journey-pause" type="button" aria-pressed="false">暫停騎行動畫</button><a href="#journey-intro">跳過動畫</a></div>
+        <div class="journey-progress" aria-hidden="true"><i></i></div>
+      </div>
+      <div class="journey-scroll-track" aria-hidden="true"></div>
+      <div class="journey-intro" id="journey-intro" aria-hidden="true"></div>
+      <noscript><p class="journey-static-note">單車徑連接不同社區，但一程代步也取決於路網能否接駁。繼續向下閱讀。</p></noscript>
+    </section>
+
+<div class="article__body text">
+<h2>居民用單車返工也買餸</h2>
+<p>記者選取一段代步路線實測，記錄沿途如何接續，以及轉入行車道、下車推行或繞路所需的時間。</p>
+<figure class="video-embed"><iframe id="route-video" src="https://www.youtube-nocookie.com/embed/71s7tNDDF00" title="跟着鏡頭走一程：單車代步實地影片" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><figcaption>跟着鏡頭走一程。<a href="https://youtu.be/71s7tNDDF00" target="_blank" rel="noopener">在YouTube觀看影片</a></figcaption></figure><figure class="story-embed"><iframe id="component-route-detail" src="components/cycling-route-map/cycling-route-breakpoints.html?v=20261104-row" title="一條2.2公里的單車徑，三度中斷：實地騎行路線與現場照片" loading="lazy" style="height:680px" scrolling="no"></iframe></figure>
+<p>記者訪問單車使用者，了解他們平日怎樣用單車，以及離開單車徑後如何繼續行程。</p>
+<p>在朗屏受訪的許先生說，附近有許多工廠，部分員工住得近，平日會踩單車上下班。「幾分鐘、10分鐘的路程嘛，就是代步了。」在他看來，單車既方便附近員工返工，周末亦可用來遊玩。</p>
+<p>同在朗屏受訪的蘇女士，則經常會踩單車去超市。</p>
+<h3>離開單車徑後須另覓通路</h3><p>一程路未必由頭踩到尾。被問到遇上沒有單車徑的路段怎樣走，蘇女士回答：「推着車。」</p>
+<p>許先生則對駛上馬路有顧慮：「你在外面騎的話，你會覺得很危險，跟車騎就是不安全嘛。」他留意到，區內仍有不少人在行人路踩車，並認為這與單車友對車流的顧慮有關。</p>
+<figure class="reporting-photo" id="pavement-cycling-photo">
+  <img src="assets/img/cyclists-on-pavement.jpg" alt="騎行者沿道路旁有欄杆分隔的行人道踩單車，前方亦有騎行者。" width="1707" height="1280" loading="lazy" decoding="async">
+  <figcaption>騎行者於行人道上騎車，方嘉雨</figcaption>
+</figure>
+<p>在元朗受訪的陳先生，表示會在馬路上踩單車，「如果你相信自己的技術，就在馬路上騎，不然還是在人行道上推吧。」</p>
+<p>若選擇經行人路繼續行程，便須下車推行；在行人路踩單車則涉及違例。</p>
+
+<p>一段單車代步行程，可以由住所通往寫字樓、工廠或商場；若要轉乘公共交通，車站便是這段單車行程的終點。兩端有沒有地方停泊，中間的路如何接續，都是居民每天要處理的事。</p>
+<p>現有的單車徑及配套，能否讓新界居民方便地完成這些日常行程？</p>
+<h2>工業地址附近泊位不足一半</h2>
+<p>記者將新界公共泊位位置，與屋邨、工商業樓宇、房委會商場及鐵路站資料比對，發現屋邨和車站附近錄有泊位的比例較高，工業地址則不足一半。</p>
+<p>以500米直線範圍計算，135個屋邨中，94個的位置點附近錄有公共泊位，佔69.6%；947個工業地址中，則有432個，佔45.6%。其餘515個未錄得泊位的工業地址，344個位於葵青或荃灣，佔約三分之二。</p>
+<p>寫字樓或商業地址附近錄有公共泊位的比例約53%，房委會商場約68%，鐵路站則約79%。同樣在新界，到不同地方返工、購物或轉車，附近的公共停泊配套也有差別。</p>
+<figure class="story-embed"><iframe id="component-parking" src="components/hk-nt-cycling-breaks-main/parking.html" title="全港公共單車泊位與不同地點分層圖" loading="lazy" style="height:850px" scrolling="no"></iframe></figure>
+<p>屯門區議員葉文斌指出，不少公共單車泊位距離住所及公共設施較遠。部分居民為求方便，便把單車停在屋苑內或者路邊。</p>
+<figure class="reporting-photo" id="parking-outside-photo">
+  <img src="assets/img/cycles-parked-outside-designated-spaces.jpg" alt="多輛單車沿行人路旁的粉紅色欄杆停放，鄰近樹木及住宅。" width="1707" height="1280" loading="lazy" decoding="async">
+  <figcaption>單車在指定泊位外違例停泊。<span class="photo-credit">攝影：於夏涵</span></figcaption>
+</figure>
+<h3 id="parking-security-heading">泊車方便之外還須顧及保安</h3><p>單車留下數小時，保安也是停泊安排的一部分。</p>
+<p>許先生亦表示，同事的單車曾在停泊期間被偷。「他們車在那裏經常被偷的，特別是那種新一點的。」</p>
+<p>蘇女士親身經歷過單車被盜，「車明明鎖了，但還是不見了。」</p>
+
+<p>單車設施的交通管理、維修及違泊清理，由不同部門分工處理。在屯門，運輸署研究泊位安排，民政處統籌聯合清理，地政處處理非法佔用政府土地的單車，食環署則清理棄置的破爛單車。葉文斌表示，居民反映問題時，有時難以找到負責跟進的部門。</p>
+<p>住所與目的地兩端的泊位，決定居民能否方便地取車、存車。下一步，便是兩端之間的路如何接起來。</p>
+<h2>單車徑盡頭須匯入車流或推行</h2>
+<p>蘇女士在沒有單車徑的路段會推行；陳先生會轉入馬路；許先生則對車流有所顧慮。</p>
+<p>這些經驗涉及單車徑與下一段路的接續。沿地圖查看，可以辨認單車徑通往哪些地方</p>
+<figure class="story-embed"><iframe id="component-routes" src="components/hk-nt-cycling-breaks-main/routes.html" title="新界九區單車徑接續缺口地圖與長條圖" loading="lazy" style="height:850px" scrolling="no"></iframe></figure>
+<p>運輸署《道路使用者守則》列明，單車徑終止後，單車駛入一般道路須察看車流，在有安全空間時才匯入；沿途部分過路位置則要求下車推行。</p>
+<p class="source">資料來源：運輸署《道路使用者守則》第四章「單車徑」。</p><figure class="ai-scene-video" id="long-ping-ai-scene"><iframe id="long-ping-youtube" src="https://www.youtube-nocookie.com/embed/QFwlgUm0luo" title="朗屏站出口附近通行場景示意｜製圖：方嘉雨" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><figcaption>朗屏站出口附近通行場景示意。依據記者現場照片，以 Cinemap 建模、TapNow 渲染，展示由騎行轉為下車推行的過程。AI生成畫面，非現場實拍；建築、人物及設施位置可能與現場有差異。<span class="scene-credit">製圖：方嘉雨</span><a href="https://youtu.be/QFwlgUm0luo" target="_blank" rel="noopener">在YouTube觀看影片</a></figcaption></figure>
+<h2>行車道事故的嚴重後果佔比較高</h2>
+<p>居民對車流的顧慮，可以與事故後果對照。</p>
+<p>2025年，警方全港錄得的單車傷亡交通意外中，單車徑有940宗，行車道路有841宗。</p>
+<p>單車徑的940宗事故中，930宗屬輕微事故，佔98.9%。致命及嚴重事故合計佔1.1%，行車道路的相應比例則為3.9%。單車徑錄得的事故較多，行車道路的已呈報事故則有較高比例造成致命或嚴重後果。</p>
+<figure class="story-embed" id="accident-chart"><iframe id="component-accidents" src="components/hk-cycling-accidents-2025/index.html?v=20261104-original-palette" title="2025年不同道路上的單車事故後果" loading="lazy" style="height:850px" scrolling="no"></iframe></figure>
+<p>若一程代步要經過兩類道路，單車徑盡頭如何接續、在哪裏過路及匯入車流，都會影響餘下路程怎樣走。</p>
+<h2>北都擬將代步配套納入規劃</h2>
+<p>現有社區要增設單車徑，須重新分配有限的道路空間。葉文斌認為，北都的條件有所不同：新發展區有較充足的空間，可以在規劃之初便納入居民代步的需要，安排單車徑連接住所、運輸樞紐及區內主要目的地。</p>
+<p>2026年《運輸策略藍圖》提出，以「單車主幹道」連接鐵路站、運輸交匯樞紐及主要目的地，再由「地區單車徑」深入區內不同用地。主幹道亦會引入單車過路處及燈號，減少下車過路的需要。</p>
+<p>在停泊方面，政府建議將單車泊位納入土地用途的附屬設施，按用地需要提供泊位。藍圖亦提出，新發展區單車網絡的200米範圍，目標連接90%以上住宅用地，並配合各區基礎設施逐步落實。</p>
+<p class="source">資料來源：運輸及物流局《運輸策略藍圖》建議23及24，第104至105頁。</p>
+<p>新田科技城的官方規劃圖，已標示擬建單車徑、泊位及交通樞紐，亦列出連接古洞北和現有新界西北單車網絡的方向。</p>
+<figure class="story-embed" id="north-planning-figure"><iframe id="component-planning" src="components/northern-metropolis-overview/index.html?v=20261104-wide-map" title="北都如何連接住宅、車站與泊位：新田科技城南部規劃總覽" loading="lazy" style="height:850px" scrolling="no"></iframe></figure>
+<p>北都以日常代步為規劃方向。居民能否沿路到達工作地點或車站、到埗後能否停泊，是檢視這項規劃落實的具體尺度。這些安排能否隨住宅和交通設施同步落實，將決定居民入伙後，單車能否真正成為日常代步的選擇。</p>
+</div>
+
+    <!-- ===================== METHOD ===================== -->
+    <section class="method" id="method" aria-labelledby="method-title"><div class="method__inner"><h2 id="method-title">新界單車代步資料來源與研究方法</h2><p>以下說明圖表及正文使用的資料、計算方法和限制。設施分析以新界為範圍，包括離島區；交通習慣及事故數字則涵蓋全港。「查閱日期」與下載日期分開列示。</p><h3>七項統計與地理資料</h3><p>1. <a href="https://data.gov.hk/tc-data/dataset/hk-td-tis_20-cycling-information">單車資訊：單車徑及公共單車泊位</a>｜機構：運輸署；發布或更新日期：<a href="https://data.gov.hk/tc-data/api/3/action/package_show?id=hk-td-tis_20-cycling-information">資源首次發布於2022年4月6日</a>；取得日期：2026年9月28日下載；用於單車徑分佈地圖、公共泊位位置及記錄容量，以及住所和目的地附近的泊位比較。</p><p>2. <a href="https://data.gov.hk/tc-data/dataset/hk-housing-eslocator-eslocator">公共租住屋邨位置資料</a>｜機構：香港房屋委員會；發布或更新日期：<a href="https://data.gov.hk/tc-data/api/3/action/package_show?id=hk-housing-eslocator-eslocator">資源首次發布於2016年7月1日</a>；取得日期：2026年9月30日下載；用於新界公共屋邨位置及附近公共泊位分析。</p><p>3. <a href="https://data.gov.hk/tc-data/dataset/hk-housing-eslocator-eslocator">商場位置資料</a>｜機構：香港房屋委員會；發布或更新日期：<a href="https://data.gov.hk/tc-data/api/3/action/package_show?id=hk-housing-eslocator-eslocator">資源首次發布於2016年7月1日</a>；取得日期：2026年10月28日下載；用於新界房委會商場位置及附近公共泊位分析。</p><p>4. <a href="https://data.gov.hk/tc-data/dataset/hk-bd-opendata-building-information">樓宇資料及樓齡紀錄</a>｜機構：屋宇署；發布或更新日期：<a href="https://data.gov.hk/tc-data/api/3/action/package_show?id=hk-bd-opendata-building-information">資源首次發布於2023年8月30日</a>；取得日期：2026年10月28日下載；用於篩選新界寫字樓／商業及工業地址，分析附近公共泊位。</p><p>5. <a href="https://data.gov.hk/tc-data/dataset/hk-landsd-openmap-development-hkms-digital-geocom">社區地理數據庫iGeoCom：港鐵站出入口</a>｜機構：地政總署；發布或更新日期：<a href="https://data.gov.hk/tc-data/api/3/action/package_show?id=hk-landsd-openmap-development-hkms-digital-geocom">GeoJSON資源首次發布於2021年3月1日</a>；取得日期：2026年9月30日下載；用於合併同一車站的出入口，分析站口附近公共泊位。</p><p>6. <a href="https://www.td.gov.hk/filemanager/tc/content_5349/tcs2022_chin.pdf">《2022年交通習慣調查》表3.10</a>｜機構：運輸署；發布或更新日期：<a href="https://www.td.gov.hk/tc/publications_and_press_releases/publications/free_publications/tcsfr/index.html">官方刊物頁列為2025年版本；確切發布日未列明</a>；取得日期：2026年10月25日下載；用於平日單車行程的用途與轉乘比例。</p><p>7. <a href="https://www.police.gov.hk/info/doc/statistics/traffic_report_2025_tc.pdf">《交通報告2025》表31，第28頁</a>｜機構：香港警務處；發布或更新日期：報告署日期為2026年5月；取得日期：2026年10月28日查閱；用於比較單車徑與行車道路的單車事故宗數及嚴重程度。</p><h3>文字及規劃圖來源</h3><p>1. <a href="https://search.grs.gov.hk/repository/img?id=KDGvBnOWsAmOG6S%2BjjPw7A%3D%3D&amp;ori=1">介紹沙田單車徑規劃的新聞公報，第3頁</a>｜機構：政府新聞處；發布或更新日期：1982年12月14日；取得日期：2026年10月25日下載；用於交代早期沙田單車徑的代步構想及停泊安排。</p><p>2. <a href="https://www.aud.gov.hk/pdf_ca/c63ch09sum.pdf">第63號報告書第9章摘要，第2段</a>｜機構：審計署；發布或更新日期：<a href="https://www.info.gov.hk/gia/general/201411/20/P201411200287.htm">2014年11月20日公布</a>；取得日期：2026年10月21日查閱；用於交代新界跨區單車徑網絡的建設目的。</p><p>3. <a href="https://www.info.gov.hk/gia/general/202605/06/P2026050600259p.htm">新界單車徑網絡及北都規劃的立法會答覆</a>｜機構：運輸及物流局；發布或更新日期：2026年5月6日；取得日期：2026年10月9日查閱；用於交代現有新界跨區網絡與北都未來單車徑的用途定位。</p><p>4 <a href="https://www.td.gov.hk/tc/road_safety/road_users_code/index/chapter_4_for_cyclists/cycleways_/index.html">《道路使用者守則》第四章「單車徑」</a>｜機構：運輸署；發布或更新日期：網頁日期標記為2026年7月16日；取得日期：2026年11月2日查閱；用於說明單車徑終止後匯入道路，以及過路和下車推行安排。</p><p>5. <a href="https://www.districtcouncils.gov.hk/tm/doc/2024_2027/sc/committee_meetings_minutes/TTC/ttc_12th_minutes_chi_20251211.pdf">2025年12月11日會議記錄，第12至19段</a>｜機構：屯門區議會交通運輸委員會；發布或更新日期：未列發布日期；會議日期為2025年12月11日；取得日期：2026年11月2日查閱；用於交代泊位選址、跨部門清理分工及當時的行動頻率。</p><p>6. <a href="https://www.tlb.gov.hk/doc/Transport%20Strategy%20Blueprint%20%28Chinese%29.pdf">《運輸策略藍圖》建議23及24，第104至105頁</a>｜機構：運輸及物流局；發布或更新日期：<a href="https://www.info.gov.hk/gia/general/202602/06/P2026020600587.htm">2026年2月6日公布</a>；取得日期：2026年10月25日下載；用於交代兩級單車路網、過路設施、泊位安排及住宅用地覆蓋目標。</p><p>7. <a href="https://nm-santintech.hk/tc/key-features-2/tpc/">「交通連接」及「行人及單車網絡」規劃圖</a>｜機構：新田科技城項目網站；發布或更新日期：網頁詮釋資料標示更新於2025年2月11日；取得日期：2026年10月25日查閱；用於展示官方「行人及單車網絡」規劃圖。</p><p>8. <a href="https://www.pland.gov.hk/file/publications/ar_report/ebook/ar_24/pdf/04_focus_tc.pdf">《2024年年報》第22頁所載新田科技城規劃圖</a>｜機構：規劃署；發布或更新日期：確切發布日期未核實；取得日期：2026年10月25日下載；用於核對新田科技城官方規劃圖及頁碼。</p><h3>研究方法</h3><p>1. 公共泊位：將新界屋邨、工商業地址、房委會商場及港鐵站出入口，與運輸署發布的公共單車泊位資料比對，計算各地點周邊500米直線範圍內是否錄有泊位，並整理附近停泊地點及記錄容量。</p><p>工商業樓宇沿用屋宇署分類。同區、同類用途而英文地址相同的記錄，經統一大小寫及空格後合併，保留全部位置點，避免共用地址的平台與樓座重複計算。</p><p>距離按香港1980方格網計算。地址有多個位置點時，取至泊位的最短直線距離；鐵路站合併全部已記錄出入口的500米範圍，每處泊位在同一站只計一次。</p><p>2. 單車徑地圖：使用運輸署地理資料，疊加屋邨及鐵路站位置。實測路線按現場照片、標誌及路線紀錄標示接續安排。</p><p>3. 單車用途：沿用《2022年交通習慣調查》表3.10完整分類，區分「僅踏單車」及「接駁其他機動交通工具的單車行程段」。各格均以全港平日單車行程為分母。</p><p>4. 交通意外：採用《交通報告2025》表31，按單車徑及行車道路分類，整理致命、嚴重及輕微事故。各類事故佔比，以該類道路已呈報的單車傷亡交通意外總數為分母。</p><p>5. 政策及規劃：按文件所涉地區及項目，分開交代沙田早期規劃、新界跨區網絡及北都未來規劃。官方規劃圖保留現有、已規劃及擬建設施的區分。</p><h3>核心數字與覆核步驟</h3><p>公共泊位比例按「範圍內至少錄有一處泊位的地點數 ÷ 該類地點總數 × 100%」計算。以下均採500米直線範圍，百分比保留一位小數。</p><ul class="method__list"><li>公共屋邨附近錄有公共泊位：94 ÷ 135 × 100% ＝ 69.6%。</li><li>寫字樓／商業地址附近錄有公共泊位：218 ÷ 409 × 100% ＝ 53.3%。</li><li>工業地址附近錄有公共泊位：432 ÷ 947 × 100% ＝ 45.6%。</li><li>工業地址附近未錄得公共泊位：（947 − 432）÷ 947 × 100% ＝ 54.4%。</li><li>房委會商場附近錄有公共泊位：23 ÷ 34 × 100% ＝ 67.6%。</li><li>鐵路站附近錄有公共泊位：34 ÷ 43 × 100% ＝ 79.1%。</li><li>未錄得泊位的工業地址中，位於葵青或荃灣的比例：344 ÷ 515 × 100% ＝ 66.8%。</li><li>單車徑致命及嚴重事故佔比：（1 ＋ 9）÷ 940 × 100% ＝ 1.1%。</li><li>行車道路致命及嚴重事故佔比：（11 ＋ 22）÷ 841 × 100% ＝ 3.9%。</li><li>單車徑輕微事故佔比：930 ÷ 940 × 100% ＝ 98.9%。</li></ul><p>交通習慣調查原表列出，往返住所與工作地點的行程佔35%，往返住所與學校的佔4%；「僅踏單車」佔88%，接駁其他機動交通工具的佔12%。覆核時逐項對照表3.10。</p><p>北都住宅用地覆蓋目標引自《運輸策略藍圖》：單車網絡200米範圍內連接90%以上住宅用地。這是規劃目標，與本報道的500米泊位觀察範圍分開呈現。</p><h3>限制</h3><ul class="method__list"><li>公共泊位分析涵蓋運輸署發布的圖層。住宅及工商業樓宇內部的停泊設施，以及其他機構管理但未列入圖層的泊位，均在統計範圍之外。記錄容量反映供應量，現場空位及使用率另須核實。</li><li>住宅資料只涵蓋房委會公共租住屋邨；商場資料只涵蓋房委會商場。工商業地址沿用屋宇署記錄，各類資料的涵蓋範圍有所不同。</li><li>500米為統一觀察範圍，並非設施設計標準。直線距離未計繞路、樓梯及海峽等阻隔，青衣站附近部分泊位位於海峽對岸。同一泊位可接近多個目的地，各組容量不作加總。</li><li>單車徑資料的線段切分與實際通行中斷分開處理；接續方式以現場安排為準。交通習慣調查反映行程組成，同一人可有多程行程；表內比例經四捨五入，加總或有差異。</li><li>事故統計以宗數計算，並非傷亡人數；比例反映已呈報事故的嚴重程度。本次未納入兩類道路的踩車人次及里程，結果用於比較事故後果。</li></ul><h3>訪問與覆核</h3><p>居民訪問於2026年11月1日進行，包括在朗屏受訪的許姓及蘇姓單車使用者，以及在元朗受訪的陳姓單車使用者。許姓受訪者曾在藥廠工作；蘇姓受訪者會踩單車到超級市場。</p><p>居民引語按訪問轉錄稿整理。三人不願提供完整姓名及肖像。訪問者：倪晋成、於夏涵、方嘉雨、查彥璐。原訪問語言：中文。</p><p>屯門區議員葉文斌的訪問於2026年11月2日進行。文中內容按記者提供的訪問摘要整理，採間接引述。訪問者：倪晋成。原訪問語言：中文。</p><p>實測於2026年11月1日上午進行，路線由彩園邨至北區政府合署，全程2.2公里，需時15分2秒。</p><p>核心數字：陳曉琳、鄺芍宜、查言潞已按上述步驟重新計算，結果與頁面一致。覆核日期：11.3</p><h3>AI使用說明</h3><p>以Claude（Anthropic）和Codex計算及整理數據、撰寫網頁程式碼、處理插圖，並協助撰寫說明文字、替代文字及資料說明。</p><p>使用工具：網頁製作使用 GPT、Codex 及 Kimi，協助數據整理、網頁程式碼、插圖處理、說明文字、替代文字及資料說明。朗屏站出口附近的場景示意影片，依據記者現場照片，以 Cinemap 建模、TapNow 渲染；影片為AI生成的場景演示，非現場實拍，場景細節可能與現場有差異。</p><p>未用於：選題、圖表類型選擇及最終版正文。</p></div></section>
+
+    <section class="corrections" aria-labelledby="corrections-title">
+      <h2 id="corrections-title">更正</h2>
+      <p>本文暫無更正。</p>
+    </section>
+  </article>
 </main>
-<footer><div class="wrap">底圖 © 地政總署。單車徑及斷口資料來自運輸署「單車資料」，斷口為本專題以 10 米容差計算的結果。</div></footer>
 
-<script>
-const D=[
- {n:'01',name:'元朗／朗屏',km:16.7,c:119},
- {n:'02',name:'天水圍',km:26.2,c:167},
- {n:'03',name:'屯門',km:19.1,c:118},
- {n:'04',name:'上水／粉嶺',km:29.5,c:202},
- {n:'05',name:'大埔',km:24.8,c:101},
- {n:'06',name:'沙田',km:38.1,c:126},
- {n:'07',name:'馬鞍山',km:14.5,c:39},
- {n:'08',name:'將軍澳／西貢',km:26.8,c:122},
- {n:'09',name:'東涌',km:8.7,c:44}
-];
-const LEG=`<ul class="legend">
- <li><svg width="26" height="10"><path d="M1 5H25" stroke="#F26B1D" stroke-width="3.5" stroke-linecap="round"/></svg>單車徑</li>
- <li><svg width="26" height="10"><path d="M1 5H25" stroke="#F26B1D" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="6 4"/></svg>連接設施</li>
- <li><svg width="26" height="10"><path d="M3 5H23" stroke="#0D0D0D" stroke-width="6"/></svg>斷口（接不上的缺口）</li>
- <li><svg width="16" height="16"><rect width="16" height="16" fill="#d9d9dc"/></svg>灰色底圖</li>
-</ul>`;
-const Z=3.2, PANEL=0.52;
-const grid=document.getElementById('grid');
-D.forEach(d=>{
-  const card=document.createElement('figure'); card.className='card'; card.style.margin=0;
-  card.innerHTML=`<h2>${d.name}</h2><p class="sub">單車徑與連接設施 ${d.km} 公里；斷口 ${d.c} 處</p>
-  <div class="map" data-n="${d.n}" aria-label="${d.name}單車徑與斷口地圖">
-    <div class="stage">
-      <img src="assets/base_${d.n}.webp" alt="" loading="lazy">
-      <img class="trk" src="assets/track_${d.n}.svg" alt="" loading="lazy">
-      <img src="assets/gap_${d.n}.svg" alt="" loading="lazy">
-    </div>
-    <div class="hl"></div>
-    <div class="zoom"><div class="zstage">
-      <img src="assets/base_${d.n}.webp" alt=""><img class="trk" src="assets/track_${d.n}.svg" alt=""><img src="assets/gap_${d.n}.svg" alt="">
-    </div><span class="tag">放大 ×${Z}</span></div>
-  </div>${LEG}`;
-  grid.appendChild(card);
-});
-const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
-document.querySelectorAll('.map').forEach(map=>{
-  const hl=map.querySelector('.hl'), zoom=map.querySelector('.zoom'), zs=map.querySelector('.zstage');
-  function move(e){
-    const r=map.getBoundingClientRect(), W=r.width;
-    const x=clamp((e.clientX-r.left)/W,0,1), y=clamp((e.clientY-r.top)/W,0,1);
-    const f=PANEL/Z, cx=clamp(x,f/2,1-f/2), cy=clamp(y,f/2,1-f/2);
-    hl.style.left=(cx-f/2)*100+'%'; hl.style.top=(cy-f/2)*100+'%'; hl.style.width=hl.style.height=f*100+'%';
-    zoom.style.left=(x<0.5?1-PANEL-0.03:0.03)*100+'%';
-    zoom.style.top=(y<0.5?1-PANEL-0.03:0.03)*100+'%';
-    const SW=Z*W; zs.style.width=zs.style.height=SW+'px';
-    zs.style.left=-(cx-f/2)*SW+'px'; zs.style.top=-(cy-f/2)*SW+'px';
-    map.classList.add('on');
-  }
-  map.addEventListener('pointerenter',move);
-  map.addEventListener('pointermove',move);
-  map.addEventListener('pointerdown',move);
-  map.addEventListener('pointerleave',e=>{ if(e.pointerType==='mouse') map.classList.remove('on'); });
-});
-document.addEventListener('pointerdown',e=>{ if(!e.target.closest('.map')) document.querySelectorAll('.map.on').forEach(m=>m.classList.remove('on')); });
 
-/* bar chart: west -> east */
-const order=['09','03','02','01','04','05','06','07','08'];
-const byN=Object.fromEntries(D.map(d=>[d.n,d])), MAX=202, plot=document.getElementById('plot');
-order.forEach((n,i)=>{
-  const d=byN[n], col=document.createElement('div'); col.className='col'+((n==='04'||n==='02')?' hi':'');
-  col.innerHTML=`<div class="num" style="--d:${(i*0.08).toFixed(2)}s">${d.c}</div><div class="bar" style="--h:${(d.c/MAX*86).toFixed(1)}%;--d:${(i*0.08).toFixed(2)}s"><span>${d.name}</span></div>`;
-  plot.appendChild(col);
-});
-const axis=document.createElement('div'); axis.className='axis'; axis.innerHTML='<div class="ttl">斷口數（處）</div>';
-[0,50,100,150,200].forEach(v=>{ const t=document.createElement('div'); t.className='tick'; t.style.bottom=(v/MAX*86).toFixed(2)+'%'; t.innerHTML='<span>'+v+'</span>'; axis.appendChild(t); });
-plot.prepend(axis);
-const road=document.getElementById('road');
-[[6,0],[19,0],[67,0],[80,0]].forEach(([l,w])=>{
-  const im=document.createElement('img'); im.className='rider'; im.src='assets/rider.png'; im.alt=''; im.style.left=l+'%'; im.style.width='auto'; road.appendChild(im);
-});
-const chart=document.querySelector('.chart');
-if('IntersectionObserver' in window){
-  const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ chart.classList.add('in'); io.disconnect(); } }); },{threshold:0.35});
-  io.observe(chart);
-}else chart.classList.add('in');
-</script>
+
+
+<script src="assets/animation/journey.js"></script>
+<script>(()=>{addEventListener('message',e=>{if(e.origin!==location.origin||e.data?.type!=='cycling-component-size')return;const frame=[...document.querySelectorAll('.story-embed iframe')].find(f=>f.contentWindow===e.source);const h=Number(e.data.height);if(frame&&Number.isFinite(h)&&h>0&&h<20000)frame.style.height=Math.ceil(h)+2+'px';});})();</script><script src="assets/js/reveal.js"></script>
 </body>
 </html>
