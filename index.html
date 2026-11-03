@@ -45,11 +45,25 @@ section.bars{margin:56px 0 0;padding-bottom:64px}
 section.bars h2{font-size:clamp(24px,3.4vw,44px);line-height:1.2;margin:0}
 section.bars .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0 0}
 .chart{position:relative;margin-top:28px;border-radius:4px;overflow:hidden}
-.plot{display:grid;grid-template-columns:repeat(9,1fr);align-items:end;height:clamp(360px,62vw,640px);padding:30px 4px 0}
+.plot{display:grid;grid-template-columns:repeat(9,1fr);align-items:end;position:relative;height:clamp(360px,62vw,640px);padding:30px 4px 0 46px}
+.axis{position:absolute;left:0;right:0;top:30px;bottom:0;pointer-events:none}
+.tick{position:absolute;left:0;right:0;border-top:1px solid #e3e6ec;height:0}
+.tick span{position:absolute;left:0;top:-9px;width:38px;text-align:right;font-size:clamp(11px,1.3vw,14px);color:var(--mute);background:#fff;line-height:18px}
+.tick:first-child{border-top:0}
+.axis .ttl{position:absolute;left:0;top:-26px;font-size:clamp(11px,1.3vw,14px);color:var(--mute)}
+.col{position:relative;z-index:1}
 .col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
 .num{font-weight:700;font-size:clamp(16px,2.6vw,32px);margin-bottom:6px}
-.bar{width:62%;max-width:100px;background:var(--lorange);border-radius:10px 10px 0 0;position:relative;display:flex;justify-content:center;align-items:flex-start;padding-top:12px}
+.bar{width:62%;max-width:100px;background:var(--lorange);border-radius:10px 10px 0 0;position:relative;display:flex;justify-content:center;align-items:flex-start}
 .bar span{writing-mode:vertical-rl;text-orientation:sideways;transform:rotate(180deg);font-weight:700;font-size:clamp(11px,1.7vw,22px);color:var(--navy);white-space:nowrap}
+.bar{height:0;overflow:hidden;transition:height 1.3s cubic-bezier(.22,.9,.25,1) var(--d,0s)}
+.bar span{margin-top:12px;opacity:0;transition:opacity .6s ease calc(var(--d,0s) + .9s)}
+.num{opacity:0;transform:translateY(10px);transition:opacity .6s ease calc(var(--d,0s) + .8s),transform .6s ease calc(var(--d,0s) + .8s)}
+.rider{opacity:0;transform:translateX(-40px);transition:opacity .8s ease 1.2s,transform 1.2s cubic-bezier(.2,.8,.2,1) 1.2s}
+.chart.in .bar{height:var(--h)}
+.chart.in .bar span,.chart.in .num{opacity:1;transform:none}
+.chart.in .rider{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.bar,.bar span,.num,.rider{transition:none!important}}
 .col.hi .bar{background:var(--orange)}
 .col.hi .bar span{color:#fff}
 .col.hi .num{color:var(--orange)}
@@ -149,15 +163,23 @@ document.addEventListener('pointerdown',e=>{ if(!e.target.closest('.map')) docum
 /* bar chart: west -> east */
 const order=['09','03','02','01','04','05','06','07','08'];
 const byN=Object.fromEntries(D.map(d=>[d.n,d])), MAX=202, plot=document.getElementById('plot');
-order.forEach(n=>{
+order.forEach((n,i)=>{
   const d=byN[n], col=document.createElement('div'); col.className='col'+((n==='04'||n==='02')?' hi':'');
-  col.innerHTML=`<div class="num">${d.c}</div><div class="bar" style="height:${(d.c/MAX*86).toFixed(1)}%"><span>${d.name}</span></div>`;
+  col.innerHTML=`<div class="num" style="--d:${(i*0.08).toFixed(2)}s">${d.c}</div><div class="bar" style="--h:${(d.c/MAX*86).toFixed(1)}%;--d:${(i*0.08).toFixed(2)}s"><span>${d.name}</span></div>`;
   plot.appendChild(col);
 });
+const axis=document.createElement('div'); axis.className='axis'; axis.innerHTML='<div class="ttl">斷口數（處）</div>';
+[0,50,100,150,200].forEach(v=>{ const t=document.createElement('div'); t.className='tick'; t.style.bottom=(v/MAX*86).toFixed(2)+'%'; t.innerHTML='<span>'+v+'</span>'; axis.appendChild(t); });
+plot.prepend(axis);
 const road=document.getElementById('road');
 [[6,0],[19,0],[67,0],[80,0]].forEach(([l,w])=>{
   const im=document.createElement('img'); im.className='rider'; im.src='assets/rider.png'; im.alt=''; im.style.left=l+'%'; im.style.width='auto'; road.appendChild(im);
 });
+const chart=document.querySelector('.chart');
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ chart.classList.add('in'); io.disconnect(); } }); },{threshold:0.35});
+  io.observe(chart);
+}else chart.classList.add('in');
 </script>
 </body>
 </html>
