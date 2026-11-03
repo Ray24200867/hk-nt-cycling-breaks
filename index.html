@@ -72,41 +72,18 @@ section.bars .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0 
 .road:after{content:"";z-index:0;position:absolute;left:0;right:0;top:55%;border-top:4px dashed #fff}
 .rider{z-index:1;position:absolute;bottom:6%;height:150%;aspect-ratio:513/480;pointer-events:none}
 .legend.big{font-size:14px;margin-top:14px}
-/* ---------- parking layers ---------- */
+/* ---------- parking layers (fixed geometry copied from the Figma frame, scaled with the container) ---------- */
 section.stack{margin:8px 0 0;padding:56px 0 64px;border-top:1px solid var(--line)}
 section.stack h2{font-size:clamp(24px,3.4vw,44px);line-height:1.2;margin:0}
 section.stack .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0 0}
 .pdot{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:15px;color:var(--navy)}
 .pdot i{width:14px;height:14px;border-radius:50%;background:#E5311F;display:inline-block}
-.layers{margin-top:18px}
-.layer{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,300px);align-items:center;gap:0 6px;margin-top:-5.5%}
-.layer:first-child{margin-top:0}
-.layer figure{margin:0;position:relative;z-index:1}
-.layer img{display:block;width:100%;height:auto}
-.callout{position:relative;padding-left:44px;z-index:2}
-.callout:before{content:"";position:absolute;left:-18px;right:calc(100% - 34px);top:19px;border-top:2px dotted var(--c)}
-.callout .no{position:absolute;left:18px;top:2px;width:32px;height:32px;border-radius:50%;background:var(--c);color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center}
-.callout{padding-left:60px}
-.callout h3{margin:0;font-size:clamp(18px,2vw,24px);color:var(--c);line-height:1.3}
-.callout .pct{font-size:clamp(44px,6vw,76px);font-weight:700;line-height:1;color:var(--c);margin:2px 0 0}
-.callout .cap{font-size:13px;color:var(--mute);margin:2px 0 6px}
-.callout p{margin:0;font-size:13px;color:var(--mute);line-height:1.6}
-
-section.stack{overflow-x:clip}
-.layers{position:relative}
-.layers:before{content:"";position:absolute;left:50%;width:100vw;margin-left:-50vw;top:-20px;bottom:-30px;z-index:0;pointer-events:none;
-  background:
-   repeating-linear-gradient(26.57deg,transparent 0 179px,#e4e7ee 179px 180px),
-   repeating-linear-gradient(-26.57deg,transparent 0 179px,#e4e7ee 179px 180px)}
-.layer figure:before,.layer figure:after{content:"";position:absolute;top:-1px;bottom:-1px;width:0;border-left:1px solid #cfd4de;z-index:2;pointer-events:none}
-.layer figure:before{left:0}
-.layer figure:after{right:0}
-@media(max-width:700px){
-  .layer{grid-template-columns:1fr;margin-top:0;margin-bottom:6px}
-  .callout{padding-left:44px;margin-bottom:34px}
-  .callout:before{display:none}
-  .callout .no{left:0}
-}
+.figscroll{position:relative;width:100vw;max-width:1240px;margin-top:8px;margin-left:50%;transform:translateX(-50%);overflow-x:auto;overflow-y:hidden}
+.fig{position:relative;min-width:860px;width:100%;aspect-ratio:1600/2790;container-type:inline-size;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+.fig svg.g{position:absolute;inset:0;width:100%;height:100%;display:block}
+.fig .a{position:absolute;margin:0;white-space:nowrap}
+.fig img.a{display:block}
+.fig .dsc{white-space:normal}
 footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--mute);font-size:13px}
 </style>
 </head>
@@ -140,32 +117,58 @@ footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--mute);fo
     <h2 id="st">市區鐵路出入口密集，附近卻幾乎沒有公共單車泊位記錄</h2>
     <p class="sub">同一張香港地圖拆成六層：每層只畫一類內容，看它 500 米內有沒有泊位點</p>
     <span class="pdot"><i></i>圓點＝運輸署公共單車泊位點（與各層標籤同色）</span>
-    <div class="layers">
-      <div class="layer" style="--c:#E58A1F">
-        <figure><img src="assets/park_layer_1.webp" alt="圖層 1：鐵路出入口與港鐵線路" loading="lazy"></figure>
-        <div class="callout"><span class="no">1</span><h3>鐵路出入口</h3><div class="pct">31.7%</div><div class="cap">附近錄有泊位</div><p>共 624 個出入口；彩線＝港鐵線路，淺灰線＝主要道路；圓圈＝出入口 500 米範圍（藍＝有泊位，灰＝沒有）；橙點＝泊位點</p></div>
-      </div>
-      <div class="layer" style="--c:#F08A24">
-        <figure><img src="assets/park_layer_2.webp" alt="圖層 2：公共屋邨" loading="lazy"></figure>
-        <div class="callout"><span class="no">2</span><h3>公共屋邨</h3><div class="pct">40.4%</div><div class="cap">附近錄有泊位</div><p>共 245 個屋邨；每個房子＝屋邨的一座樓；橙屋頂＝500 米內有泊位（99 個屋邨），灰＝沒有；橙點＝泊位點</p></div>
-      </div>
-      <div class="layer" style="--c:#7B3FA0">
-        <figure><img src="assets/park_layer_3.webp" alt="圖層 3：房委會商場" loading="lazy"></figure>
-        <div class="callout"><span class="no">3</span><h3>房委會商場</h3><div class="pct">44.6%</div><div class="cap">附近錄有泊位</div><p>共 56 處；每棟灰色商場＝一個商場；紫色招牌＝500 米內有泊位（25 個商場），灰色招牌＝沒有；紫點＝泊位點</p></div>
-      </div>
-      <div class="layer" style="--c:#C98200">
-        <figure><img src="assets/park_layer_4.webp" alt="圖層 4：工商業樓宇" loading="lazy"></figure>
-        <div class="callout"><span class="no">4</span><h3>工商業樓宇</h3><div class="pct">17.3%</div><div class="cap">附近錄有泊位</div><p>共 4,625 個地址；每個房子＝一座工商業樓；琥珀屋頂＝500 米內有泊位（802 個地址），灰＝沒有；琥珀點＝泊位點</p></div>
-      </div>
-      <div class="layer" style="--c:#D6245F">
-        <figure><img src="assets/park_layer_5.webp" alt="圖層 5：樓齡 50 年以上住宅" loading="lazy"></figure>
-        <div class="callout"><span class="no">5</span><h3>樓齡 50 年以上住宅</h3><div class="pct">17.7%</div><div class="cap">附近錄有泊位</div><p>共 9,205 個地址；每個房子＝一座舊樓；粉紅屋頂＝500 米內有泊位（1,625 個地址），灰＝沒有；粉紅點＝泊位點</p></div>
-      </div>
-      <div class="layer" style="--c:#E5311F">
-        <figure><img src="assets/park_layer_6.webp" alt="圖層 6：運輸署公共單車泊位點（3D 地形）" loading="lazy"></figure>
-        <div class="callout"><span class="no">6</span><h3>公共單車泊位</h3><p>運輸署 515 個點；3D 地形底圖，紅點＝泊位點</p></div>
-      </div>
-    </div>
+    <div class="figscroll"><div class="fig" role="group" aria-label="六層分層地圖：鐵路出入口、公共屋邨、房委會商場、工商業樓宇、樓齡50年以上住宅、公共單車泊位">
+      <svg class="g" viewBox="0 270 1600 2790" preserveAspectRatio="none" aria-hidden="true">
+        <g stroke="#CCD1DE" stroke-opacity=".45" stroke-width="1"  fill="none"><line x1="-200" y1="300" x2="1947" y2="-773.5"/><line x1="-200" y1="1200" x2="1947" y2="2273.5"/><line x1="-200" y1="630" x2="1947" y2="-443.5"/><line x1="-200" y1="1530" x2="1947" y2="2603.5"/><line x1="-200" y1="960" x2="1947" y2="-113.5"/><line x1="-200" y1="1860" x2="1947" y2="2933.5"/><line x1="-200" y1="1290" x2="1947" y2="216.5"/><line x1="-200" y1="2190" x2="1947" y2="3263.5"/><line x1="-200" y1="1620" x2="1947" y2="546.5"/><line x1="-200" y1="2520" x2="1947" y2="3593.5"/><line x1="-200" y1="1950" x2="1947" y2="876.5"/><line x1="-200" y1="2850" x2="1947" y2="3923.5"/><line x1="-200" y1="2280" x2="1947" y2="1206.5"/><line x1="-200" y1="3180" x2="1947" y2="4253.5"/><line x1="-200" y1="2610" x2="1947" y2="1536.5"/><line x1="-200" y1="3510" x2="1947" y2="4583.5"/><line x1="-200" y1="2940" x2="1947" y2="1866.5"/><line x1="-200" y1="3840" x2="1947" y2="4913.5"/></g>
+        <g stroke="#CCD1DE" stroke-opacity=".9" stroke-width="1"><line x1="120" y1="300" x2="120" y2="3060"/><line x1="1120" y1="300" x2="1120" y2="3060"/></g>
+      </svg>
+      <img class="a" src="assets/park_layer_1.webp" alt="圖層 1：鐵路出入口與港鐵線路" loading="lazy" style="left:7.5000cqw;top:3.7500cqw;width:62.5000cqw;height:31.3750cqw">
+      <svg class="a" style="left:70.2500cqw;top:22.3125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#E58A1F" stroke-width="2" stroke-dasharray="4 4"/></svg>
+      <span class="a" style="left:75.0000cqw;top:21.3125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#E58A1F"></span>
+      <span class="a" style="left:75.0000cqw;top:21.5625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">1</span>
+      <span class="a" style="left:78.0000cqw;top:17.2500cqw;color:#E58A1F;font-weight:700;font-size:2.0000cqw;line-height:1.188">鐵路出入口</span>
+      <span class="a" style="left:78.0000cqw;top:19.6250cqw;color:#E58A1F;font-weight:700;font-size:4.7500cqw;line-height:1.197">31.7%</span>
+      <span class="a" style="left:78.0000cqw;top:24.9375cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.2">附近錄有泊位</span>
+      <span class="a dsc" style="left:78.0000cqw;top:27.0625cqw;width:21.0000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">共 624 個出入口；彩線＝港鐵線路，淺灰線＝主要道路；圓圈＝出入口 500 米範圍（藍＝有泊位，灰＝沒有）；橙點＝泊位點</span>
+      <img class="a" src="assets/park_layer_2.webp" alt="圖層 2：公共屋邨" loading="lazy" style="left:7.5000cqw;top:31.2500cqw;width:62.5000cqw;height:31.3750cqw">
+      <svg class="a" style="left:70.2500cqw;top:49.8125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#F08A24" stroke-width="2" stroke-dasharray="4 4"/></svg>
+      <span class="a" style="left:75.0000cqw;top:48.8125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#F08A24"></span>
+      <span class="a" style="left:75.0000cqw;top:49.0625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">2</span>
+      <span class="a" style="left:78.0000cqw;top:44.7500cqw;color:#F08A24;font-weight:700;font-size:2.0000cqw;line-height:1.188">公共屋邨</span>
+      <span class="a" style="left:78.0000cqw;top:47.1250cqw;color:#F08A24;font-weight:700;font-size:4.7500cqw;line-height:1.197">40.4%</span>
+      <span class="a" style="left:78.0000cqw;top:52.4375cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.2">附近錄有泊位</span>
+      <span class="a dsc" style="left:78.0000cqw;top:54.5625cqw;width:21.0000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">共 245 個屋邨；每個房子＝屋邨的一座樓；橙屋頂＝500 米內有泊位（99 個屋邨），灰＝沒有；橙點＝泊位點</span>
+      <img class="a" src="assets/park_layer_3.webp" alt="圖層 3：房委會商場" loading="lazy" style="left:7.5000cqw;top:58.7500cqw;width:62.5000cqw;height:31.3750cqw">
+      <svg class="a" style="left:70.2500cqw;top:77.3125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#7B3FA0" stroke-width="2" stroke-dasharray="4 4"/></svg>
+      <span class="a" style="left:75.0000cqw;top:76.3125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#7B3FA0"></span>
+      <span class="a" style="left:75.0000cqw;top:76.5625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">3</span>
+      <span class="a" style="left:78.0000cqw;top:72.2500cqw;color:#7B3FA0;font-weight:700;font-size:2.0000cqw;line-height:1.188">房委會商場</span>
+      <span class="a" style="left:78.0000cqw;top:74.6250cqw;color:#7B3FA0;font-weight:700;font-size:4.7500cqw;line-height:1.197">44.6%</span>
+      <span class="a" style="left:78.0000cqw;top:79.9375cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.2">附近錄有泊位</span>
+      <span class="a dsc" style="left:78.0000cqw;top:82.0625cqw;width:21.0000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">共 56 處；每棟灰色商場＝一個商場；紫色招牌＝500 米內有泊位（25 個商場），灰色招牌＝沒有；紫點＝泊位點</span>
+      <img class="a" src="assets/park_layer_4.webp" alt="圖層 4：工商業樓宇" loading="lazy" style="left:7.5000cqw;top:86.2500cqw;width:62.5000cqw;height:31.3750cqw">
+      <svg class="a" style="left:70.2500cqw;top:104.8125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#C98200" stroke-width="2" stroke-dasharray="4 4"/></svg>
+      <span class="a" style="left:75.0000cqw;top:103.8125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#C98200"></span>
+      <span class="a" style="left:75.0000cqw;top:104.0625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">4</span>
+      <span class="a" style="left:78.0000cqw;top:99.7500cqw;color:#C98200;font-weight:700;font-size:2.0000cqw;line-height:1.188">工商業樓宇</span>
+      <span class="a" style="left:78.0000cqw;top:102.1250cqw;color:#C98200;font-weight:700;font-size:4.7500cqw;line-height:1.197">17.3%</span>
+      <span class="a" style="left:78.0000cqw;top:107.4375cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.2">附近錄有泊位</span>
+      <span class="a dsc" style="left:78.0000cqw;top:109.5625cqw;width:21.0000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">共 4,625 個地址；每個房子＝一座工商業樓；琥珀屋頂＝500 米內有泊位（802 個地址），灰＝沒有；琥珀點＝泊位點</span>
+      <img class="a" src="assets/park_layer_5.webp" alt="圖層 5：樓齡 50 年以上住宅" loading="lazy" style="left:7.5000cqw;top:113.7500cqw;width:62.5000cqw;height:31.3750cqw">
+      <svg class="a" style="left:70.2500cqw;top:132.3125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#D6245F" stroke-width="2" stroke-dasharray="4 4"/></svg>
+      <span class="a" style="left:75.0000cqw;top:131.3125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#D6245F"></span>
+      <span class="a" style="left:75.0000cqw;top:131.5625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">5</span>
+      <span class="a" style="left:78.0000cqw;top:127.2500cqw;color:#D6245F;font-weight:700;font-size:2.0000cqw;line-height:1.188">樓齡50年以上住宅</span>
+      <span class="a" style="left:78.0000cqw;top:129.6250cqw;color:#D6245F;font-weight:700;font-size:4.7500cqw;line-height:1.197">17.7%</span>
+      <span class="a" style="left:78.0000cqw;top:134.9375cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.2">附近錄有泊位</span>
+      <span class="a dsc" style="left:78.0000cqw;top:137.0625cqw;width:21.0000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">共 9,205 個地址；每個房子＝一座舊樓；粉紅屋頂＝500 米內有泊位（1,625 個地址），灰＝沒有；粉紅點＝泊位點</span>
+      <img class="a" src="assets/park_layer_6.webp" alt="圖層 6：運輸署公共單車泊位點（3D 地形）" loading="lazy" style="left:7.5000cqw;top:137.5000cqw;width:62.5000cqw;height:35.9375cqw">
+      <svg class="a" style="left:70.2500cqw;top:159.8125cqw;width:4.3750cqw;height:0.1250cqw;overflow:visible" viewBox="0 0 70 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="70" y2="1" stroke="#E5311F" stroke-width="2" stroke-dasharray="4 4"/></svg>
+      <span class="a" style="left:75.0000cqw;top:158.8125cqw;width:2.1250cqw;height:2.1250cqw;border-radius:50%;background:#E5311F"></span>
+      <span class="a" style="left:75.0000cqw;top:159.0625cqw;width:2.1250cqw;text-align:center;color:#fff;font-weight:700;font-size:1.3750cqw;line-height:1.182">6</span>
+      <span class="a" style="left:78.0000cqw;top:157.1250cqw;color:#E5311F;font-weight:700;font-size:1.8750cqw;line-height:1.2">公共單車泊位</span>
+      <span class="a dsc" style="left:78.0000cqw;top:159.6250cqw;width:19.5000cqw;color:#5B6573;font-size:1.2500cqw;line-height:1.4">運輸署 515 個點；3D 地形底圖，紅點＝泊位點</span>
+    </div></div>
     <p class="src">資料來源：運輸署單車泊位資料；房委會屋邨及商場資料；屋宇署樓宇資料及樓齡紀錄；OpenStreetMap（道路、鐵路出入口、港鐵線路、地形底圖紋理）；高程：AWS Terrain Tiles；記者整理　製圖：於夏涵</p>
     <p class="src">圖註：500 米為直線距離，按資料位置點計算。工商業記錄按地址合併；舊樓指入伙紙日期為 50 年或以上的住宅／綜合用途樓宇；商場只涵蓋房委會商場；出入口只計香港境內帶出口編號者；港鐵線路不含輕鐵。運輸署資料中市區只有 6 個泊位點，結果可能反映資料覆蓋範圍。屋邨及各類樓宇的房子位置為示意。底圖 © OpenStreetMap contributors。</p>
   </section>
