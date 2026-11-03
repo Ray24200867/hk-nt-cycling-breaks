@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>新界單車徑：哪裡斷了？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap">
+<style>
+:root{
+  --navy:#162946; --mute:#5b6573; --orange:#F26B1D; --lorange:#FAB37A; --road:#EDF0F5; --line:#dfe3ea;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:var(--navy);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+header{padding:48px 0 16px}
+h1{font-size:clamp(28px,4.2vw,52px);line-height:1.2;margin:0 0 10px}
+.lead{color:var(--mute);font-size:clamp(15px,1.6vw,18px);margin:0;max-width:60em}
+.hint{color:var(--mute);font-size:14px;margin:6px 0 0}
+/* ---------- maps ---------- */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px 24px;margin:28px 0 8px}
+@media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.grid{grid-template-columns:1fr}}
+.card h2{font-size:20px;margin:0}
+.card .sub{color:var(--mute);font-size:14px;margin:2px 0 10px}
+.map{position:relative;aspect-ratio:1/1;overflow:hidden;background:#e7e8ea;cursor:crosshair;touch-action:pan-y;border-radius:4px}
+.stage{position:absolute;inset:0}
+.stage img{position:absolute;left:0;top:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
+.stage .trk{filter:drop-shadow(0 0 2.5px rgba(255,140,40,.9))}
+.hl{position:absolute;border:2px solid var(--navy);background:rgba(255,255,255,.12);pointer-events:none;display:none}
+.zoom{position:absolute;width:52%;aspect-ratio:1/1;overflow:hidden;background:#e7e8ea;border:3px solid #fff;box-shadow:0 6px 22px rgba(0,0,0,.35);pointer-events:none;display:none}
+.zoom .zstage{position:absolute}
+.zoom .zstage img{position:absolute;left:0;top:0;width:100%;height:100%}
+.zoom .zstage .trk{filter:drop-shadow(0 0 3px rgba(255,140,40,.9))}
+.zoom .tag{position:absolute;left:6px;bottom:6px;background:rgba(22,41,70,.85);color:#fff;font-size:12px;padding:1px 7px;border-radius:2px}
+.map.on .hl,.map.on .zoom{display:block}
+/* ---------- legends ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;list-style:none;margin:10px 0 0;padding:0;font-size:13px;color:var(--mute)}
+.legend li{display:flex;align-items:center;gap:7px}
+.legend svg{flex:none}
+.src{color:var(--mute);font-size:13px;margin:22px 0 0}
+/* ---------- bar chart ---------- */
+section.bars{margin:56px 0 0;padding-bottom:64px}
+section.bars h2{font-size:clamp(24px,3.4vw,44px);line-height:1.2;margin:0}
+section.bars .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0 0}
+.chart{position:relative;margin-top:28px;border-radius:4px;overflow:hidden}
+.plot{display:grid;grid-template-columns:repeat(9,1fr);align-items:end;height:clamp(360px,62vw,640px);padding:30px 4px 0}
+.col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.num{font-weight:700;font-size:clamp(16px,2.6vw,32px);margin-bottom:6px}
+.bar{width:62%;max-width:100px;background:var(--lorange);border-radius:10px 10px 0 0;position:relative;display:flex;justify-content:center;align-items:flex-start;padding-top:12px}
+.bar span{writing-mode:vertical-rl;text-orientation:sideways;transform:rotate(180deg);font-weight:700;font-size:clamp(11px,1.7vw,22px);color:var(--navy);white-space:nowrap}
+.col.hi .bar{background:var(--orange)}
+.col.hi .bar span{color:#fff}
+.col.hi .num{color:var(--orange)}
+.road{position:relative;height:clamp(60px,10vw,110px);background:var(--road)}
+.road:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,var(--orange) 0 24%,transparent 24% 26%,var(--orange) 26% 44%,transparent 44% 46%,var(--orange) 46% 64%,transparent 64% 66%,var(--orange) 66% 79%,transparent 79% 81%,var(--orange) 81%)}
+.road:after{content:"";position:absolute;left:0;right:0;top:55%;border-top:4px dashed #fff}
+.rider{position:absolute;bottom:6%;height:150%;aspect-ratio:513/480;pointer-events:none}
+.legend.big{font-size:14px;margin-top:14px}
+footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--mute);font-size:13px}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>新界單車徑：哪裡斷了？</h1>
+  <p class="lead">單車徑走到盡頭、沒有接上其他單車徑的地方，在地圖上以黑色粗線標示。每張地圖都可以把滑鼠移上去（手機用手指按住滑動），旁邊會出現放大圖。</p>
+  <p class="hint">斷口：單車徑線段端點與最近的其他線段相距超過 10 米處（10 米容差）。</p>
+</header>
+
+<main class="wrap">
+  <div class="grid" id="grid"></div>
+  <p class="src">資料來源：運輸署　底圖：© 地政總署　製圖：於夏涵</p>
+
+  <section class="bars" aria-labelledby="bt">
+    <h2 id="bt">上水／粉嶺斷口最多，天水圍居次</h2>
+    <p class="sub">新界單車徑共有 1,288 處斷口</p>
+    <div class="chart">
+      <div class="plot" id="plot" role="img" aria-label="九個分區的斷口數長條圖"></div>
+      <div class="road" id="road"></div>
+    </div>
+    <ul class="legend big">
+      <li><svg width="22" height="14"><rect width="22" height="14" rx="3" fill="#F26B1D"/></svg>斷口最多的兩個區</li>
+      <li><svg width="22" height="14"><rect width="22" height="14" rx="3" fill="#FAB37A"/></svg>其他分區</li>
+      <li><svg width="30" height="8"><path d="M0 4H12M17 4H30" stroke="#F26B1D" stroke-width="4"/></svg>橙色路緣的缺口代表斷口（示意）</li>
+      <li>長條上方數字＝斷口數（處）；由西向東排列</li>
+    </ul>
+    <p class="src">資料來源：運輸署　製圖：於夏涵</p>
+  </section>
+</main>
+<footer><div class="wrap">底圖 © 地政總署。單車徑及斷口資料來自運輸署「單車資料」，斷口為本專題以 10 米容差計算的結果。</div></footer>
+
+<script>
+const D=[
+ {n:'01',name:'元朗／朗屏',km:16.7,c:119},
+ {n:'02',name:'天水圍',km:26.2,c:167},
+ {n:'03',name:'屯門',km:19.1,c:118},
+ {n:'04',name:'上水／粉嶺',km:29.5,c:202},
+ {n:'05',name:'大埔',km:24.8,c:101},
+ {n:'06',name:'沙田',km:38.1,c:126},
+ {n:'07',name:'馬鞍山',km:14.5,c:39},
+ {n:'08',name:'將軍澳／西貢',km:26.8,c:122},
+ {n:'09',name:'東涌',km:8.7,c:44}
+];
+const LEG=`<ul class="legend">
+ <li><svg width="26" height="10"><path d="M1 5H25" stroke="#F26B1D" stroke-width="3.5" stroke-linecap="round"/></svg>單車徑</li>
+ <li><svg width="26" height="10"><path d="M1 5H25" stroke="#F26B1D" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="6 4"/></svg>連接設施</li>
+ <li><svg width="26" height="10"><path d="M3 5H23" stroke="#0D0D0D" stroke-width="6"/></svg>斷口（接不上的缺口）</li>
+ <li><svg width="16" height="16"><rect width="16" height="16" fill="#d9d9dc"/></svg>灰色底圖</li>
+</ul>`;
+const Z=3.2, PANEL=0.52;
+const grid=document.getElementById('grid');
+D.forEach(d=>{
+  const card=document.createElement('figure'); card.className='card'; card.style.margin=0;
+  card.innerHTML=`<h2>${d.name}</h2><p class="sub">單車徑與連接設施 ${d.km} 公里；斷口 ${d.c} 處</p>
+  <div class="map" data-n="${d.n}" aria-label="${d.name}單車徑與斷口地圖">
+    <div class="stage">
+      <img src="assets/base_${d.n}.webp" alt="" loading="lazy">
+      <img class="trk" src="assets/track_${d.n}.svg" alt="" loading="lazy">
+      <img src="assets/gap_${d.n}.svg" alt="" loading="lazy">
+    </div>
+    <div class="hl"></div>
+    <div class="zoom"><div class="zstage">
+      <img src="assets/base_${d.n}.webp" alt=""><img class="trk" src="assets/track_${d.n}.svg" alt=""><img src="assets/gap_${d.n}.svg" alt="">
+    </div><span class="tag">放大 ×${Z}</span></div>
+  </div>${LEG}`;
+  grid.appendChild(card);
+});
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+document.querySelectorAll('.map').forEach(map=>{
+  const hl=map.querySelector('.hl'), zoom=map.querySelector('.zoom'), zs=map.querySelector('.zstage');
+  function move(e){
+    const r=map.getBoundingClientRect(), W=r.width;
+    const x=clamp((e.clientX-r.left)/W,0,1), y=clamp((e.clientY-r.top)/W,0,1);
+    const f=PANEL/Z, cx=clamp(x,f/2,1-f/2), cy=clamp(y,f/2,1-f/2);
+    hl.style.left=(cx-f/2)*100+'%'; hl.style.top=(cy-f/2)*100+'%'; hl.style.width=hl.style.height=f*100+'%';
+    zoom.style.left=(x<0.5?1-PANEL-0.03:0.03)*100+'%';
+    zoom.style.top=(y<0.5?1-PANEL-0.03:0.03)*100+'%';
+    const SW=Z*W; zs.style.width=zs.style.height=SW+'px';
+    zs.style.left=-(cx-f/2)*SW+'px'; zs.style.top=-(cy-f/2)*SW+'px';
+    map.classList.add('on');
+  }
+  map.addEventListener('pointerenter',move);
+  map.addEventListener('pointermove',move);
+  map.addEventListener('pointerdown',move);
+  map.addEventListener('pointerleave',e=>{ if(e.pointerType==='mouse') map.classList.remove('on'); });
+});
+document.addEventListener('pointerdown',e=>{ if(!e.target.closest('.map')) document.querySelectorAll('.map.on').forEach(m=>m.classList.remove('on')); });
+
+/* bar chart: west -> east */
+const order=['09','03','02','01','04','05','06','07','08'];
+const byN=Object.fromEntries(D.map(d=>[d.n,d])), MAX=202, plot=document.getElementById('plot');
+order.forEach(n=>{
+  const d=byN[n], col=document.createElement('div'); col.className='col'+((n==='04'||n==='02')?' hi':'');
+  col.innerHTML=`<div class="num">${d.c}</div><div class="bar" style="height:${(d.c/MAX*86).toFixed(1)}%"><span>${d.name}</span></div>`;
+  plot.appendChild(col);
+});
+const road=document.getElementById('road');
+[[6,0],[19,0],[67,0],[80,0]].forEach(([l,w])=>{
+  const im=document.createElement('img'); im.className='rider'; im.src='assets/rider.png'; im.alt=''; im.style.left=l+'%'; im.style.width='auto'; road.appendChild(im);
+});
+</script>
+</body>
+</html>
