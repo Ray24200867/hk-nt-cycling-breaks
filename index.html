@@ -72,6 +72,31 @@ section.bars .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0 
 .road:after{content:"";z-index:0;position:absolute;left:0;right:0;top:55%;border-top:4px dashed #fff}
 .rider{z-index:1;position:absolute;bottom:6%;height:150%;aspect-ratio:513/480;pointer-events:none}
 .legend.big{font-size:14px;margin-top:14px}
+/* ---------- parking layers ---------- */
+section.stack{margin:8px 0 0;padding:56px 0 64px;border-top:1px solid var(--line)}
+section.stack h2{font-size:clamp(24px,3.4vw,44px);line-height:1.2;margin:0}
+section.stack .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0 0}
+.pdot{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:15px;color:var(--navy)}
+.pdot i{width:14px;height:14px;border-radius:50%;background:#E5311F;display:inline-block}
+.layers{margin-top:18px}
+.layer{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,300px);align-items:center;gap:0 6px;margin-top:-5.5%}
+.layer:first-child{margin-top:0}
+.layer figure{margin:0;position:relative;z-index:1}
+.layer img{display:block;width:100%;height:auto}
+.callout{position:relative;padding-left:44px;z-index:2}
+.callout:before{content:"";position:absolute;left:-18px;right:calc(100% - 34px);top:19px;border-top:2px dotted var(--c)}
+.callout .no{position:absolute;left:18px;top:2px;width:32px;height:32px;border-radius:50%;background:var(--c);color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center}
+.callout{padding-left:60px}
+.callout h3{margin:0;font-size:clamp(18px,2vw,24px);color:var(--c);line-height:1.3}
+.callout .pct{font-size:clamp(44px,6vw,76px);font-weight:700;line-height:1;color:var(--c);margin:2px 0 0}
+.callout .cap{font-size:13px;color:var(--mute);margin:2px 0 6px}
+.callout p{margin:0;font-size:13px;color:var(--mute);line-height:1.6}
+@media(max-width:700px){
+  .layer{grid-template-columns:1fr;margin-top:0;margin-bottom:6px}
+  .callout{padding-left:44px;margin-bottom:34px}
+  .callout:before{display:none}
+  .callout .no{left:0}
+}
 footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--mute);font-size:13px}
 </style>
 </head>
@@ -99,6 +124,40 @@ footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--mute);fo
       <li>長條上方數字＝斷口數（處）；由西向東排列</li>
     </ul>
     <p class="src">資料來源：運輸署　製圖：於夏涵</p>
+  </section>
+
+  <section class="stack" aria-labelledby="st">
+    <h2 id="st">市區鐵路出入口密集，附近卻幾乎沒有公共單車泊位記錄</h2>
+    <p class="sub">同一張香港地圖拆成六層：每層只畫一類內容，看它 500 米內有沒有泊位點</p>
+    <span class="pdot"><i></i>圓點＝運輸署公共單車泊位點（與各層標籤同色）</span>
+    <div class="layers">
+      <div class="layer" style="--c:#E58A1F">
+        <figure><img src="assets/park_layer_1.webp" alt="圖層 1：鐵路出入口與港鐵線路" loading="lazy"></figure>
+        <div class="callout"><span class="no">1</span><h3>鐵路出入口</h3><div class="pct">31.7%</div><div class="cap">附近錄有泊位</div><p>共 624 個出入口；彩線＝港鐵線路，淺灰線＝主要道路；圓圈＝出入口 500 米範圍（藍＝有泊位，灰＝沒有）；橙點＝泊位點</p></div>
+      </div>
+      <div class="layer" style="--c:#F08A24">
+        <figure><img src="assets/park_layer_2.webp" alt="圖層 2：公共屋邨" loading="lazy"></figure>
+        <div class="callout"><span class="no">2</span><h3>公共屋邨</h3><div class="pct">40.4%</div><div class="cap">附近錄有泊位</div><p>共 245 個屋邨；每個房子＝屋邨的一座樓；橙屋頂＝500 米內有泊位（99 個屋邨），灰＝沒有；橙點＝泊位點</p></div>
+      </div>
+      <div class="layer" style="--c:#7B3FA0">
+        <figure><img src="assets/park_layer_3.webp" alt="圖層 3：房委會商場" loading="lazy"></figure>
+        <div class="callout"><span class="no">3</span><h3>房委會商場</h3><div class="pct">44.6%</div><div class="cap">附近錄有泊位</div><p>共 56 處；每棟灰色商場＝一個商場；紫色招牌＝500 米內有泊位（25 個商場），灰色招牌＝沒有；紫點＝泊位點</p></div>
+      </div>
+      <div class="layer" style="--c:#C98200">
+        <figure><img src="assets/park_layer_4.webp" alt="圖層 4：工商業樓宇" loading="lazy"></figure>
+        <div class="callout"><span class="no">4</span><h3>工商業樓宇</h3><div class="pct">17.3%</div><div class="cap">附近錄有泊位</div><p>共 4,625 個地址；每個房子＝一座工商業樓；琥珀屋頂＝500 米內有泊位（802 個地址），灰＝沒有；琥珀點＝泊位點</p></div>
+      </div>
+      <div class="layer" style="--c:#D6245F">
+        <figure><img src="assets/park_layer_5.webp" alt="圖層 5：樓齡 50 年以上住宅" loading="lazy"></figure>
+        <div class="callout"><span class="no">5</span><h3>樓齡 50 年以上住宅</h3><div class="pct">17.7%</div><div class="cap">附近錄有泊位</div><p>共 9,205 個地址；每個房子＝一座舊樓；粉紅屋頂＝500 米內有泊位（1,625 個地址），灰＝沒有；粉紅點＝泊位點</p></div>
+      </div>
+      <div class="layer" style="--c:#E5311F">
+        <figure><img src="assets/park_layer_6.webp" alt="圖層 6：運輸署公共單車泊位點（3D 地形）" loading="lazy"></figure>
+        <div class="callout"><span class="no">6</span><h3>公共單車泊位</h3><p>運輸署 515 個點；3D 地形底圖，紅點＝泊位點</p></div>
+      </div>
+    </div>
+    <p class="src">資料來源：運輸署單車泊位資料；房委會屋邨及商場資料；屋宇署樓宇資料及樓齡紀錄；OpenStreetMap（道路、鐵路出入口、港鐵線路、地形底圖紋理）；高程：AWS Terrain Tiles；記者整理　製圖：於夏涵</p>
+    <p class="src">圖註：500 米為直線距離，按資料位置點計算。工商業記錄按地址合併；舊樓指入伙紙日期為 50 年或以上的住宅／綜合用途樓宇；商場只涵蓋房委會商場；出入口只計香港境內帶出口編號者；港鐵線路不含輕鐵。運輸署資料中市區只有 6 個泊位點，結果可能反映資料覆蓋範圍。屋邨及各類樓宇的房子位置為示意。底圖 © OpenStreetMap contributors。</p>
   </section>
 </main>
 <footer><div class="wrap">底圖 © 地政總署。單車徑及斷口資料來自運輸署「單車資料」，斷口為本專題以 10 米容差計算的結果。</div></footer>
