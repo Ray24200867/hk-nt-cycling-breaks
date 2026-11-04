@@ -39,7 +39,6 @@
   layers.forEach((layer,i)=>{
    const im=layer.querySelector('img').getBoundingClientRect(),x=im.left-br.left,y=im.top-br.top,w=im.width,h=im.height;
    const T=[x+w*.334,y],R=[x+w,y+h*.663],B=[x+w*.666,y+h],L=[x,y+h*.333];
-   if(i===0)[T,R,B,L].forEach(p=>add(p[0],0,p[0],H));
    const ext=(p,q)=>{const k=(q[1]-p[1])/(q[0]-p[0]);add(-W,p[1]+k*(-W-p[0]),2*W,p[1]+k*(2*W-p[0]),'ext');};
    ext(T,R);ext(L,B);ext(T,L);ext(R,B);
   });
