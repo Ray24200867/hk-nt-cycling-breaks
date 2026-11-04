@@ -87,7 +87,23 @@ section.stack .sub{font-size:clamp(16px,2vw,24px);color:var(--mute);margin:6px 0
 footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--mute);font-size:13px}
 </style>
 <style>:root{--navy:#49372f;--mute:#5b6573;--orange:#ef785d;--lorange:#b5bac1;--line:#e4e7eb}.wrap{max-width:none;padding:0}header{padding:0 0 12px}h1,.bars h2{font-size:18px!important;line-height:1.5!important}h1{margin:0 0 8px}.lead,.hint,.sub{font-size:14px!important;line-height:1.8}.grid{grid-template-columns:repeat(2,1fr);gap:24px 18px;margin:22px 0}.card h2{font-size:16px}.legend{font-size:12px}.stage .trk,.zoom .zstage .trk{filter:none}.zoom{box-shadow:none}.map,.chart,.bar{border-radius:0}.plot{height:330px;padding-left:34px}.num{font-size:16px!important;color:var(--navy)!important}.bar{width:62%;flex-shrink:0}.bar-place{font-size:12px;writing-mode:vertical-rl;min-height:90px;margin-top:10px;color:var(--navy)}.col{padding-bottom:0}.axis{bottom:100px}.road,.legend.big{display:none!important}.src{font-size:13px;line-height:1.8}footer{border:0;padding:12px 0;font-size:13px}.bars{margin-top:30px!important;padding-bottom:20px!important}.tick span,.axis .ttl{font-size:12px!important}.card .sub{font-size:12px!important}@media(max-width:600px){h1,.bars h2{font-size:17px!important}.src,footer{font-size:12px}.grid{grid-template-columns:1fr}.num{font-size:14px!important}.bar-place{font-size:12px}.plot{height:310px}}</style><style>.plot{display:block!important;height:390px!important;padding:0!important;overflow:visible}.chart{overflow:visible}</style><style>.grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px 12px!important}.card{min-width:0}.card h2{font-size:14px;line-height:1.5}.card .sub{font-size:12px!important;line-height:1.5;margin-bottom:6px}.map{width:100%;max-width:100%;border-radius:0}.compact-key{font-size:12px;color:#5b6573;margin:12px 0}.lead,.hint{font-size:13px!important}.plot{height:300px!important}.bars{margin-top:24px!important}.bars h2{font-size:17px!important}.bars .sub{font-size:13px!important}.chart{margin-top:12px}@media(max-width:500px){.grid{gap:16px 8px!important}.card h2{font-size:12px}.card .sub{font-size:12px!important}.zoom .tag{font-size:12px}.map{min-height:0}}
-</style><style>.plot{height:252px!important}.hover-column{cursor:pointer;outline:none}.hover-bar{transition:transform .22s ease,fill .22s ease;transform:scaleX(1)}.hover-number{transition:transform .22s ease;font-weight:500}.hover-column.active .hover-bar,.hover-column:focus .hover-bar{transform:scaleX(1.2) scaleY(1.08);fill:#ef785d}.hover-column.active .hover-number,.hover-column:focus .hover-number{transform:translateY(-10px) scale(1.35);font-weight:700}.hover-column:focus .hover-bar{stroke:#49372f;stroke-width:1}@media(prefers-reduced-motion:reduce){.hover-bar,.hover-number{transition:none}}</style><style>.grid{column-gap:30px!important;row-gap:28px!important;padding:8px 6px}.card{position:relative;transform-origin:center;transition:transform .28s ease;outline:none;background:white}.card:hover,.card:focus-visible{transform:scale(1.065);z-index:5}.card h2{transition:color .28s ease}.card:hover h2,.card:focus-visible h2{color:#bd503b}.card:focus-visible{outline:2px solid #ef785d;outline-offset:5px}@media(max-width:500px){.grid{column-gap:15px!important;row-gap:22px!important;padding:6px 3px}}@media(prefers-reduced-motion:reduce){.card{transition:none}}</style></head>
+</style><style>.plot{height:252px!important}.hover-column{cursor:pointer;outline:none}.hover-bar{transition:transform .22s ease,fill .22s ease;transform:scaleX(1)}.hover-number{transition:transform .22s ease;font-weight:500}.hover-column.active .hover-bar,.hover-column:focus .hover-bar{transform:scaleX(1.2) scaleY(1.08);fill:#ef785d}.hover-column.active .hover-number,.hover-column:focus .hover-number{transform:translateY(-10px) scale(1.35);font-weight:700}.hover-column:focus .hover-bar{stroke:#49372f;stroke-width:1}@media(prefers-reduced-motion:reduce){.hover-bar,.hover-number{transition:none}}</style><style>.grid{column-gap:30px!important;row-gap:28px!important;padding:8px 6px}.card{position:relative;transform-origin:center;transition:transform .28s ease;outline:none;background:white}.card:hover,.card:focus-visible{transform:scale(1.065);z-index:5}.card h2{transition:color .28s ease}.card:hover h2,.card:focus-visible h2{color:#bd503b}.card:focus-visible{outline:2px solid #ef785d;outline-offset:5px}@media(max-width:500px){.grid{column-gap:15px!important;row-gap:22px!important;padding:6px 3px}}@media(prefers-reduced-motion:reduce){.card{transition:none}}</style><style>
+/* 斷口長條圖：還原為 Figma 直立版設計（西向東、橙色柱、區名在柱內、底部單車道與騎士） */
+section.bars{--orange:#F26B1D;--lorange:#FAB37A;--navy:#162946}
+section.bars .chart{overflow:hidden;border-radius:4px;margin-top:20px}
+section.bars .plot{display:grid!important;grid-template-columns:repeat(9,1fr);align-items:end;position:relative;height:clamp(340px,62vw,520px)!important;padding:30px 4px 0 46px!important;overflow:visible}
+section.bars .axis{bottom:0!important}
+section.bars .col{padding-bottom:0}
+section.bars .num{font-size:clamp(16px,2.6vw,30px)!important;font-weight:700;color:var(--navy)!important}
+section.bars .col.hi .num{color:var(--orange)!important}
+section.bars .bar{width:62%;max-width:100px;background:var(--lorange)!important;border-radius:10px 10px 0 0!important;flex-shrink:0}
+section.bars .col.hi .bar{background:var(--orange)!important}
+section.bars .bar span{writing-mode:vertical-rl;text-orientation:sideways;transform:rotate(180deg);font-weight:700;font-size:clamp(11px,1.7vw,20px);color:var(--navy);white-space:nowrap}
+section.bars .col.hi .bar span{color:#fff}
+section.bars .road{display:block!important;position:relative;height:clamp(60px,10vw,100px);background:#EDF0F5}
+section.bars .legend.big{display:none!important}
+</style>
+</head>
 <body>
 <header class="wrap">
   <h1>新界單車徑的線段接續</h1>
@@ -175,25 +191,26 @@ document.querySelectorAll('.map').forEach(map=>{
 });
 document.addEventListener('pointerdown',e=>{ if(!e.target.closest('.map')) document.querySelectorAll('.map.on').forEach(m=>m.classList.remove('on')); });
 
-/* Sorted flat bars: a shared zero baseline and direct labels. */
-const plot=document.getElementById('plot');
-function drawBars(){
- const data=D.slice().sort((a,b)=>b.c-a.c),W=plot.clientWidth,H=252,left=32,right=6,base=152,top=26,step=(W-left-right)/9,scale=(base-top)/250;
- plot.innerHTML='';
- const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('width','100%');svg.setAttribute('height',H);svg.setAttribute('role','img');svg.setAttribute('aria-label','九個分區的線段接續缺口數，由多至少排列，上水／粉嶺最多，為202處');plot.append(svg);
- const add=(tag,attrs,text)=>{const el=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));if(text!==undefined)el.textContent=text;svg.append(el);return el;};
- add('text',{x:0,y:14,fill:'#5b6573','font-size':12},'處');
- for(const n of [0,100,200,250]){const y=base-n*scale;add('line',{x1:left,x2:W-right,y1:y,y2:y,stroke:'#e4e7eb'});add('text',{x:left-6,y:y+4,'text-anchor':'end',fill:'#5b6573','font-size':12},n);}
- data.forEach((d,i)=>{const cx=left+(i+.5)*step,bw=step*.6,y=base-d.c*scale;
- const group=document.createElementNS(ns,'g');group.setAttribute('class','hover-column');group.setAttribute('tabindex','0');group.setAttribute('role','button');group.setAttribute('aria-label',d.name+'，'+d.c+'處');svg.append(group);
- const bar=add('rect',{x:cx-bw/2,y,width:bw,height:base-y,fill:i<2?'#ef785d':'#b5bac1',class:'hover-bar',style:`transform-origin:${cx}px ${base}px`});group.append(bar);
- const number=add('text',{x:cx,y:y-7,'text-anchor':'middle','font-size':12,fill:'#49372f',class:'hover-number',style:`transform-origin:${cx}px ${y-7}px`},d.c);group.append(number);
- const hit=add('rect',{x:cx-step*.48,y:top-20,width:step*.96,height:base-top+20,fill:'transparent'});group.append(hit);
- add('text',{x:cx,y:base+16,'writing-mode':'vertical-rl','font-size':12,fill:'#49372f'},d.name);
- group.addEventListener('pointerenter',()=>group.classList.add('active'));group.addEventListener('pointerleave',()=>group.classList.remove('active'));group.addEventListener('click',()=>group.classList.toggle('active'));
- });
-}
-new ResizeObserver(drawBars).observe(plot);drawBars();
+/* bar chart: west -> east, same design as the Figma vertical chart */
+const order=['09','03','02','01','04','05','06','07','08'];
+const byN=Object.fromEntries(D.map(d=>[d.n,d])), MAX=202, plot=document.getElementById('plot');
+order.forEach((n,i)=>{
+  const d=byN[n], col=document.createElement('div'); col.className='col'+((n==='04'||n==='02')?' hi':'');
+  col.innerHTML=`<div class="num" style="--d:${(i*0.08).toFixed(2)}s">${d.c}</div><div class="bar" style="--h:${(d.c/MAX*86).toFixed(1)}%;--d:${(i*0.08).toFixed(2)}s"><span>${d.name}</span></div>`;
+  plot.appendChild(col);
+});
+const axis=document.createElement('div'); axis.className='axis'; axis.innerHTML='<div class="ttl">斷口數（處）</div>';
+[0,50,100,150,200].forEach(v=>{ const t=document.createElement('div'); t.className='tick'; t.style.bottom=(v/MAX*86).toFixed(2)+'%'; t.innerHTML='<span>'+v+'</span>'; axis.appendChild(t); });
+plot.prepend(axis);
+const road=document.getElementById('road');
+[[6,0],[19,0],[67,0],[80,0]].forEach(([l,w])=>{
+  const im=document.createElement('img'); im.className='rider'; im.src='assets/rider.png'; im.alt=''; im.style.left=l+'%'; im.style.width='auto'; road.appendChild(im);
+});
+const chart=document.querySelector('.chart');
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ chart.classList.add('in'); io.disconnect(); } }); },{threshold:0.35});
+  io.observe(chart);
+}else chart.classList.add('in');
 </script>
 <script>(()=>{let last=0;const send=()=>{const h=Math.ceil(document.body.getBoundingClientRect().height);if(h>0&&Math.abs(h-last)>2){last=h;parent.postMessage({type:'cycling-component-size',height:h},location.origin)}};new ResizeObserver(send).observe(document.body);addEventListener('load',send);document.addEventListener('toggle',send,true);send()})()</script></body>
 </html>
